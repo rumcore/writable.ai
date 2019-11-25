@@ -21,11 +21,11 @@ const writable = {
 		
 		
 		var head = document.getElementsByTagName("HEAD")[0];
-		var link    = document.createElement("link");
+		var link = document.createElement("link");
 		console.log(link)
 		link.type = 'text/css';
 		link.rel  = 'stylesheet';
-		link.href = 'https://rumcore.github.io/writable.ai/';
+		link.href = 'https://rumcore.github.io/writable.ai/index.css';
 		
 		
 		
