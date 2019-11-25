@@ -1,2 +1,2 @@
 # writeable.ai
-All things writable
+For Everything
