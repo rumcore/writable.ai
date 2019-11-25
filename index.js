@@ -19,12 +19,28 @@ const writable = {
 		r.element.addEventListener('keydown',function(e){r.set.action(r,[e,3])});
 		r.element.addEventListener('dblclick',function(e){r.set.action(r,[e,4])});
 		
+		
+		var head = document.getElementsByTagName("HEAD")[0];
+		var link    = document.createElement("link");
+		
+		link.type = 'text/css';
+		link.rel  = 'stylesheet';
+		link.href = 'https://rumcore.github.io/writable.ai/';
+		link.addEventListener('load',function(){
+			content ? document.body.insertBefore(header,content) : document.body.appendChild(header);
+			window.setTimeout(function(){header.style.opacity = "1";},0)
+			
+		});
+		
+		head.appendChild(link);
+		
+		
 	},
 	
 	set : {
 		action : function(r,p){
 			r.e = p[0];
-			r.t = p[1]
+			r.t = p[1];
 			var f = r.e.target;
 			var s = window.getSelection();
 			
