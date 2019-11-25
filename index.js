@@ -22,15 +22,12 @@ const writable = {
 		
 		var head = document.getElementsByTagName("HEAD")[0];
 		var link    = document.createElement("link");
-		
+		console.log(link)
 		link.type = 'text/css';
 		link.rel  = 'stylesheet';
 		link.href = 'https://rumcore.github.io/writable.ai/';
-		link.addEventListener('load',function(){
-			content ? document.body.insertBefore(header,content) : document.body.appendChild(header);
-			window.setTimeout(function(){header.style.opacity = "1";},0)
-			
-		});
+		
+		
 		
 		head.appendChild(link);
 		
