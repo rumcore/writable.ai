@@ -32,7 +32,7 @@ const selectors = {
 					toggle.nextElementSibling.style.display = 'none';
 					toggle.dataset.state = '0';
 				}else{
-					toggle.style.backgroundImage = "url(https://rumcore.github.io/writable.ai/v2/icons/svg/selector-close.svg)";
+					toggle.style.backgroundImage = "url(https://rumcore.github.io/writable.ai/v2/icons/svg/black-selector-close.svg)";
 					toggle.nextElementSibling.style.display = 'inline-block';
 				
 					toggle.dataset.state = '1';
