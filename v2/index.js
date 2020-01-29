@@ -48,7 +48,7 @@ const writable = {
 		//s_blocks.src    = r.host+"blocks.js";
 		s_selectors.src = r.host+"selectors.js";
 		s_modifiers.src = r.host+"modifiers.js";
-		document.getElementsByTagName("head")[0].appendChild(s_blocks);
+		//document.getElementsByTagName("head")[0].appendChild(s_blocks);
 		
 		for(collection in r.collections){
 			var item = r.collections[collection];
