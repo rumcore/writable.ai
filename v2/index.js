@@ -488,7 +488,7 @@ const writable = {
 				collection  : {'image':'<div class="image" contenteditable="false"></div>'},
 				containers  : {'container':'<div class="container"></div>'},
 				blocks      : {
-								'upload':'<div class="upload" contenteditable="false"><div class="upload-item"><img class="upload-item-img" src="https://rumcore.github.io/writable.ai/assets/icons/svg/black/selector-image.svg"/><span>Drag & Drop image or </span><a class="upload-item-link">click here </a><span>to add image URL.</span></div></div>',
+								'upload':'<div class="upload" contenteditable="false"><div class="upload-item"><img class="upload-item-img" src="https://rumcore.github.io/writable.ai/v2/icons/svg/black-selector-image.svg"/><span>Drag & Drop image or </span><a class="upload-item-link">click here </a><span>to add image URL.</span></div></div>',
 								'basic' : '<div class="basic"><img class="basic-img"/></div>'
 							  },
 			},

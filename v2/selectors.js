@@ -28,11 +28,11 @@ const selectors = {
 			block.firstElementChild.firstElementChild.addEventListener("click",function(r,p){
 				var toggle = this;
 				if(toggle.dataset.state === '1'){
-					toggle.style.backgroundImage = "url(https://rumcore.github.io/writable.ai/assets/icons/svg/black/selector-add.svg)";
+					toggle.style.backgroundImage = "url(https://rumcore.github.io/writable.ai/v2/icons/svg/black-selector-add.svg)";
 					toggle.nextElementSibling.style.display = 'none';
 					toggle.dataset.state = '0';
 				}else{
-					toggle.style.backgroundImage = "url(https://rumcore.github.io/writable.ai/assets/icons/svg/black/selector-close.svg)";
+					toggle.style.backgroundImage = "url(https://rumcore.github.io/writable.ai/v2/icons/svg/selector-close.svg)";
 					toggle.nextElementSibling.style.display = 'inline-block';
 				
 					toggle.dataset.state = '1';
@@ -58,7 +58,7 @@ const selectors = {
 				this.active = false;
 				this.block.style.display = "none";
 				var toggle = this.block.firstElementChild.firstElementChild;
-				toggle.style.backgroundImage = "url(https://rumcore.github.io/writable.ai/assets/icons/svg/black/selector-add.svg)";
+				toggle.style.backgroundImage = "url(https://rumcore.github.io/writable.ai/v2/icons/svg/selector-add.svg)";
 				toggle.nextElementSibling.style.display = 'none';
 				toggle.dataset.state = '0';
 				
@@ -118,18 +118,18 @@ const selectors = {
 		items : {
 			
 			"selector-text" : [
-				"https://rumcore.github.io/writable.ai/assets/icons/svg/black/selector-text.svg",
+				"https://rumcore.github.io/writable.ai/v2/icons/svg/black-selector-text.svg",
 				-1,
 				-1,
 				function(r){
 					var params = {};
 					params.styles = {padding:"0px",width:"360px"};
 					params.buttons = [
-						["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-heading.svg","Heading",function(){
+						["https://rumcore.github.io/writable.ai/assets/icons/svg/white/white-selector-heading.svg","Heading",function(){
 							r.insert(r,['heading','default']);
-						}],["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-quote.svg","Quote",function(){
+						}],["https://rumcore.github.io/writable.ai/assets/icons/svg/white/white-selector-quote.svg","Quote",function(){
 							r.insert(r,['quote','default']);
-						}],["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-tip.svg","Note",function(){
+						}],["https://rumcore.github.io/writable.ai/assets/icons/svg/white/white-selector-tip.svg","Note",function(){
 							r.insert(r,['note','default']);
 						}]
 					]
@@ -138,7 +138,7 @@ const selectors = {
 				}
 			],
 			"selector-image" : [
-				"https://rumcore.github.io/writable.ai/assets/icons/svg/black/selector-image.svg",
+				"https://rumcore.github.io/writable.ai/v2/icons/svg/black-selector-image.svg",
 				-1,
 				-1,
 				function(r){
@@ -148,7 +148,7 @@ const selectors = {
 				}
 			],
 			"selector-list" : [
-				"https://rumcore.github.io/writable.ai/assets/icons/svg/black/selector-list.svg",
+				"https://rumcore.github.io/writable.ai/v2/icons/svg/black-selector-list.svg",
 				-1,
 				-1,
 				function(r){
