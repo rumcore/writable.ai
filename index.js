@@ -1,88 +1,761 @@
-const writable={data:{},init:function(r){r.element=document.getElementById('writable');r.body=document.body;r.history=[];r.modifiers.init(r);r.selectors.init(r);r.dialog.init(r);r.triggers=['mouseup','mousedown','keyup','keydown','dblclick','paste','click'];r.element.addEventListener('mouseup',function(e){r.set.action(r,[e,0])});r.element.addEventListener('mousedown',function(e){r.set.action(r,[e,1])});r.element.addEventListener('keyup',function(e){r.set.action(r,[e,2])});r.element.addEventListener('keydown',function(e){r.set.action(r,[e,3])});r.element.addEventListener('dblclick',function(e){r.set.action(r,[e,4])});r.element.addEventListener("paste",function(e){r.set.action(r,[e,5])});window.addEventListener("dragover",function(e){e=e||event;e.preventDefault()});window.addEventListener("drop",function(e){e=e||event;e.preventDefault()});var style=document.createElement('style');document.head.appendChild(style);style.sheet.insertRule("#writable .block>.expandable>.hide>button{background-image: url('https://rumcore.github.io/writable.ai/assets/icons/svg/black/expandable-show.svg') !important}");style.sheet.insertRule('#writable .block>.expandable>.hide>div{display:block !important}')},set:{state:{active:function(r){r.element.setAttribute('contentEditable','true');r.element.firstChild?r.set.cursor.start(r,[r.element.firstChild]):null}},action:function(r,p){r.e=p[0];r.t=p[1];var f=r.e.target;var s=window.getSelection();if(s.rangeCount>0){r.caret={};r.caret.position=s.focusOffset;f=s.getRangeAt(0).startContainer}
-r.selection=!1;switch(p[1]){case 0:if(s.rangeCount>0){var range=s.getRangeAt(0)
-if(range.startOffset!==range.endOffset){r.selection=r.get.selection(r,[s,range])}
-f=range.startContainer}
-break;case 1:break;case 2:break;case 3:r.e.keyCode===46||r.e.keyCode===9?r.e.preventDefault():null;break;case 4:break;case 5:break}
-f=f.nodeType!==1?f.parentElement:f;f=r.e.target.id==="writable"?f:r.e.target;r.f=f
-r.focused=r.get.focused(r,[f]);var handlers=r.get.handlers(r,[f]);if(handlers.length>0&&!r.dialog.active){var block=r.e.target?r.get.block(r,[r.e.target]):null;for(handler in handlers){var h=handlers[handler];if(p[1]!==1){h.triggers.selection&&r.selection?h.triggers.selection(r,[r.selection]):r.modifiers.hide(r)}
-if(block.id!=="selector"&&p[1]!==2){r.selectors.hide(r)}
-h.triggers[r.e.keyCode]?h.triggers[r.e.keyCode](r):null;h.triggers[r.triggers[r.t]]?h.triggers[r.triggers[r.t]](r):null}}
-r.set.refactor(r);r.suspend=!1},text:{end:function(r,p){var target=p[0],end;while(target){end=target;target=target.lastElementChild}
-var range=document.createRange();var sel=window.getSelection();range.selectNodeContents(end);range.collapse(!1);sel.removeAllRanges();sel.addRange(range)},start:function(r,p){var target=p[0],start;while(target){start=target;target=target.firstElementChild}
-window.getSelection().collapse(start,0)},position:function(r,p){window.getSelection().collapse(p[0].firstChild,p[1])},split:{start:function(r,p){var e=p[0];e.innerHTML=e.innerHTML.replace(/&nbsp;/g," ");var n=document.createElement(e.tagName);var start=e.innerHTML.substring(0,p[1]);var end=e.innerHTML.substring(p[1],e.innerHTML.length);e.className?n.className=e.className:null;n.appendChild(document.createTextNode(start));e.innerHTML=end;e.parentElement.insertBefore(n,e);return n},end:function(r,p){var e=p[0];var n=document.createElement(e.tagName);var start=e.innerHTML.substring(0,p[1]);var end=e.innerHTML.substring(p[1],e.innerHTML.length);e.className?n.className=e.className:null;n.innerHTML=end;e.innerHTML=start;if(e.nextElementSibling){e.parentElement.insertBefore(n,e.nextElementSibling)}else{e.parentElement.appendChild(n)}
-return n}},modify:function(r,p){var element=p[0];var selection=r.selection;var items=selection.children;var min=0;if(items){if(selection.start>0){r.set.text.split.start(r,[items[0],selection.start]);min=items.length>1?0:selection.start}
-if(selection.end-min<items[items.length-1].innerText.length){r.set.text.split.end(r,[items[items.length-1],selection.end-min])}
-for(var i=0;i<items.length;i++){element=element.cloneNode();element.innerHTML=items[i].innerHTML;items[i].parentElement.replaceChild(element,items[i])}
-r.set.cursor.end(r,[element])}
-return items},replace:function(r,p){var text=p[0];var selection,range;var s=window.getSelection();if(s.rangeCount>0){range=s.getRangeAt(0)
-if(range.startOffset!==range.endOffset){selection=r.get.selection(r,[s,range])}}
-var items=selection?selection.children:[];var min=0;if(items.length>1){if(selection.start>0){r.set.text.split.start(r,[items[0],selection.start]);min=items.length>1?0:selection.start}
-if(selection.end-min<items[items.length-1].innerText.length){r.set.text.split.end(r,[items[items.length-1],selection.end-min])}
-for(var i=1;i<items.length;i++){items[i].parentElement.removeChild(items[i])}
-var span=document.createElement("span");var div=document.createElement("div");div.innerHTML=text;span.innerHTML=div.innerText;items[0].parentElement.replaceChild(span,items[0])
-window.scrollTo(0,items[0].offsetTop+items[0].offsetHeight)
-r.set.cursor.end(r,[span])}else if(items.length===1){var div=document.createElement("div");div.innerHTML=text;items[0].innerHTML=items[0].innerHTML.replace(range.toString(),div.innerText)}else{var div=document.createElement("div");div.innerHTML=text;if(r.caret.position===0&&r.focused[0][0].innerText.length<2){r.focused[0][0].innerHTML=text;r.set.text.end(r,[r.focused[0][0]])}else{r.f.innerHTML=r.f.innerText.substring(0,r.caret.position)+text+r.f.innerText.substring(r.caret.position,r.f.innerText.length);r.set.text.position(r,[r.focused[0][0],r.caret.position])}}
-return items},paste:function(r){r.e.preventDefault();var text=(r.e.originalEvent||r.e).clipboardData.getData('text/plain');text=text.replace(/(?:\\[rn]|[\r\n]+)+/g,"");r.set.text.replace(r,[text])}},image:{uploader:null,upload:function(r,c){r.set.image.uploader(c)}},block:{focus:{last:function(r,p){var block=p[0];var container=block.lastElementChild;var item=container.lastElementChild;var element=item.lastElementChild;r.set.text.end(r,[element])}},split:function(r,p){var focused=p[0];var current=focused[3][0].cloneNode();var current_container=focused[2][0].cloneNode();var next=current.cloneNode();var next_container=current_container.cloneNode();next.appendChild(next_container);var child=focused[1][2];var children=[];while(child){children[children.length]=child;child=child.nextElementSibling}
-for(child in children){next_container.appendChild(children[child])}
-focused[3][2]?focused[4][0].insertBefore(next,focused[3][2]):focused[4][0].appendChild(next);current_container.appendChild(focused[1][0]);current.appendChild(current_container);focused[4][0].insertBefore(current,next)
-children.length>0?null:next.parentElement.removeChild(next);return[focused[3][0],current,next]}},refactor:function(r,p){var blocks=r.element.getElementsByClassName('block');for(var i=0;i<blocks.length;i++){var b=blocks[i];if(b.children.length===0){b.parentElement.removeChild(b)}}},cursor:{start:function(r,p){var element=p[0];while(element.nodeType!==3||element===undefined){element=element.firstChild}
-window.getSelection().collapse(element,0)},end:function(r,p){window.getSelection().collapse(p[0].firstChild,p[0].firstChild.textContent.length)},position:function(r,p){window.getSelection().collapse(p[0].firstChild,p[1])},}},get:{markup:function(r,p){var div=document.createElement("div");div.innerHTML=p[0];return div.firstElementChild},block:function(r,p){var block=p[0];if(block){while(block.className!=='block'&&block!==r.body&&block){block=block.parentElement?block.parentElement:block}}else{return!1}
-return block.className==='block'?block:!1},focused:function(r,p){var focused=p[0].nodeType===1&&p[0].tagName.toLowerCase()!=="br"?p[0]:p[0].parentElement;var collection;var block=r.get.block(r,[focused]);if(block){collection=[];while(focused!==block){collection[collection.length]=[focused,focused.previousElementSibling,focused.nextElementSibling]
-focused=focused.parentElement}
-collection[collection.length]=[block,block.previousElementSibling,block.nextElementSibling];collection[collection.length]=[block.parentElement,block.parentElement.previousElementSibling,block.parentElement.nextElementSibling]}
-return collection?collection:!1},selection:function(r,p){var selection=p[0];var range=p[1];var collection={};var se=range.startContainer.nodeType===1?range.startContainer:range.startContainer.parentElement;var ee=range.endContainer.nodeType===1?range.endContainer:range.endContainer.parentElement;collection.children=[se];if(se.parentElement===ee.parentElement){while(se!==ee){se=se.nextElementSibling;collection.children[collection.children.length]=se}}else{collection.children[collection.children.length]=ee}
-collection.text=selection.toString();collection.length=collection.text.length;collection.start=range.startOffset;collection.end=range.endOffset;collection.box=range.getClientRects()[0];return collection},handlers:function(r,p){var focused=p[0]
-var handlers=[];while(focused.tagName.toLocaleLowerCase()!=="html"){if(r.handlers[focused.className]){handlers[handlers.length]=r.handlers[focused.className]}
-focused=focused.parentElement}
-return handlers.length>0?handlers:!1}},handlers:{heading:{block:'<div class="block"><div class="heading"><h3><span>This is a sample heading<br></span></h3></div></div>',focus:{start:function(r,p){},end:function(r,p){r.set.text.end(r,p)}},triggers:{13:function(r){r.e.preventDefault();var block=r.get.markup(r,[r.handlers.paragraph.block]);if(r.focused[r.focused.length-2][2]){r.focused[r.focused.length-1][0].insertBefore(block,r.focused[r.focused.length-2][2]);r.set.text.start(r,[block])}else{r.focused[r.focused.length-1][0].appendChild(block);r.set.text.start(r,[block])}},8:function(r){if(r.t===3){if(r.caret.position===0&&r.focused[1][0].innerText.length>1){r.e.preventDefault();var prev=r.focused[r.focused.length-2][1].firstElementChild;var handler=r.handlers[prev.className];handler.focus.end(r,[prev])}else if(r.caret.position===1&&r.focused[1][0].innerText.length===1){r.e.preventDefault();r.focused[1][0].firstElementChild.innerHTML="<br>"}else if(r.caret.position===0&&r.focused[1][0].innerText.length===1){if(r.focused[1][1]){r.e.preventDefault();r.set.text.end(r,[r.focused[1][1].lastElementChild]);r.focused[1][0].parentElement.removeChild(r.focused[1][0])}else if(r.focused[r.focused.length-2][1]){r.set.block.focus.last(r,[r.focused[r.focused.length-2][1]])
-r.focused[1][0].parentElement.removeChild(r.focused[1][0]);if(r.focused[r.focused.length-3][0].children.length===0){r.focused[r.focused.length-1][0].removeChild(r.focused[r.focused.length-2][0])}}}}else if(r.caret.position===0&&r.focused[1][0].innerText.length<2){r.selectors.show(r)}},selection:function(r){console.log("show heading modifier");r.modifiers.show(r,["modifier-heading"])}},mouseup:function(r){if(r.focused[1][0].innerText.length<2){r.selectors.show(r)}},keyup:function(r){if(r.caret.position===0&&r.focused[1][0].innerText.length<2){r.selectors.show(r)}},modifiers:{}},paragraph:{block:'<div class="block"><div class="paragraph"><p><span><br></span></p></div></div>',focus:{start:function(r,p){r.set.text.start(r,p)},end:function(r,p){r.set.text.end(r,p)}},triggers:{13:function(r){if(r.t===3){}},8:function(r){if(r.t===3){console.log(r.focused[1][0])
-if(r.caret.position===0&&r.focused[1][0].innerText.length>1&&r.focused[r.focused.length-4][1]===null){r.e.preventDefault();var prev=r.focused[r.focused.length-2][1].firstElementChild;var handler=r.handlers[prev.className];handler.focus.end(r,[prev])}else if(r.caret.position===1&&r.focused[1][0].innerText.length===1){r.e.preventDefault();r.focused[1][0].firstElementChild.innerHTML="<br>"}else if(r.caret.position===0&&r.focused[1][0].innerText.length===1){r.e.preventDefault();if(r.focused[1][1]){r.e.preventDefault();r.set.text.end(r,[r.focused[1][1].lastElementChild]);r.focused[1][0].parentElement.removeChild(r.focused[1][0])}else if(r.focused[r.focused.length-2][1]){r.set.block.focus.last(r,[r.focused[r.focused.length-2][1]])
-r.focused[1][0].parentElement.removeChild(r.focused[1][0]);if(r.focused[r.focused.length-3][0].children.length===0){r.focused[r.focused.length-1][0].removeChild(r.focused[r.focused.length-2][0])}}}}else if(r.caret.position===0&&r.focused[1][0].innerText.length<2){r.selectors.show(r)}},mouseup:function(r){if(r.focused[1][0].innerText.length<2){r.selectors.show(r)}},keyup:function(r){if(r.caret.position===0&&r.focused[1][0].innerText.length<2){r.selectors.show(r)}},selection:function(r){r.modifiers.show(r,["modifier-text"])},paste:function(r){r.set.text.paste(r)}},modifiers:{}},image:{block:'<div class="block"><div class="image"><div><img/></div></div></div>',triggers:{selection:function(r){console.log("show heading modifier")}},modifiers:{},paste:function(r){r.e.preventDefault()}},list:{block:{unordered:'<div class="block"><ul class="list"><li><span>Sample List Item<br></span></li></ul></div>',ordered:'<div class="block"><ol class="list"><li><span>Sample List Item<br></span></li></ol></div>',},triggers:{13:function(r){if(r.t===3){if(r.focused[1][0].innerText.length<2){r.e.preventDefault();var block=r.get.markup(r,[r.handlers.paragraph.block])
-var next=r.focused[r.focused.length-2][2];if(next){next.parentElement.insertBefore(block,next)}else{r.focused[r.focused.length-2][0].parentElement.appendChild(block)}
-r.focused[1][0].parentElement.removeChild(r.focused[1][0]);r.set.text.start(r,[block])}}},8:function(r){if(r.t===3){if(r.caret.position===1&&r.focused[1][0].innerText.length===1){r.e.preventDefault();r.focused[1][0].firstElementChild.innerHTML="<br>"}else if(r.caret.position===0&&r.focused[1][0].innerText.length===1){if(r.focused[1][1]){r.e.preventDefault();r.set.text.end(r,[r.focused[1][1].lastElementChild]);r.focused[1][0].parentElement.removeChild(r.focused[1][0])}else if(r.focused[r.focused.length-2][1]){r.set.block.focus.last(r,[r.focused[r.focused.length-2][1]])
-r.focused[1][0].parentElement.removeChild(r.focused[1][0]);if(r.focused[r.focused.length-3][0].children.length===0){r.focused[r.focused.length-1][0].removeChild(r.focused[r.focused.length-2][0])}}}}},mouseup:function(r){},keyup:function(r){},selection:function(r){r.modifiers.show(r,["modifier-text"])},paste:function(r){r.set.text.paste(r)}},modifiers:{}},quote:{block:'<div class="block"><div class="quote"><div><q>Your insightful quote goes here</q><cite>Jane Doe, TNRD employee</cite></div></div></div>',focus:{start:function(r,p){},end:function(r,p){r.set.text.end(r,p)}},triggers:{13:function(r){if(r.t===3){r.e.preventDefault();var item=r.focused[0][0];var next=r.focused[0][2];if(next){r.set.text.end(r,[next])}}},8:function(r){if(r.t===3){var item=r.focused[0][0];var prev=r.focused[0][1];var text=item.innerText.replace(/(?:\\[rn]|[\r\n]+)+/g,"");console.log(text.length)
-console.log(text)
-console.log(item)
-if(text.length<2){r.e.preventDefault();item.innerHTML="<br>"
-if(prev){if(prev.contentEditable!=="false"){r.set.text.end(r,[prev])}}}else if(r.caret.position===0&&prev){if(prev.contentEditable!=="false"){r.set.text.end(r,[prev])}}}},paste:function(r){r.set.text.paste(r)},selection:function(r){}},modifiers:{}},note:{block:'<div class="block"><div class="note"><div class="notice"><img src="https://rumcore.github.io/writable.ai/assets/icons/svg/black/block-note.svg"><h5>Note:</h5><p>Note details go here</p></div></div></div>',focus:{start:function(r,p){},end:function(r,p){r.set.text.end(r,p)}},triggers:{13:function(r){if(r.t===3){r.e.preventDefault();var item=r.focused[0][0];var next=r.focused[0][2];if(next){r.set.text.end(r,[next])}}},8:function(r){if(r.t===3){var item=r.focused[0][0];var prev=r.focused[0][1];var text=item.innerText.replace(/(?:\\[rn]|[\r\n]+)+/g,"");if(text.length===0){r.e.preventDefault();if(prev.contentEditable!=="false"){r.set.text.end(r,[prev])}}}},paste:function(r){r.set.text.paste(r)},selection:function(r){}},modifiers:{}},table:{block:'<div class="block"><div class="table"></div></div>',item:{default:'<div class="table-row"><div class="_4"><div class="block"><div class="paragraph"><p><span>Title</span></p></div></div></div><div class="_4"><div class="block"><div class="paragraph"><p><span>Label</span></p></div></div></div><div class="_4"><div class="block"><div class="paragraph"><p><span>Label</span></p></div></div></div></div>',heading:'<div class="table-heading"><div class="_4"><div class="block"><div class="paragraph"><p><b>Column 1</b></p></div></div></div><div class="_4"><div class="block"><div class="paragraph"><p><b>Column 2</b></p></div></div></div><div class="_4"><div class="block"><div class="paragraph"><p><b>Column 3</b></p></div></div></div></div>'},element:{default:'<div class="block"><div class="paragraph"><p><span><br></span></p></div></div>'},set:function(r,p){var option=p[0];var block=r.get.markup(r,[r.handlers.table.block]);var item,cell;switch(option){case 'default':heading=r.get.markup(r,[r.handlers.table.item.heading]);item=r.get.markup(r,[r.handlers.table.item.default]);block.firstElementChild.appendChild(heading);block.firstElementChild.appendChild(item);break}
-return block},triggers:{13:function(r){if(r.t===3){r.e.preventDefault();var cell=r.focused[r.focused.length-1][0];var row=cell.parentElement;var next=r.focused[r.focused.length-1][2];var parent=row.parentElement;var block=parent.parentElement;var text=row.textContent.replace(/(?:\\[rn]|[\r\n]+)+/g,"");if(text.length===0){if(row.nextElementSibling){r.set.text.start(r,[row.nextElementSibling])}else{if(block.nextElementSibling){r.set.text.start(r,[block.nextElementSibling])}}
-row.parentElement.removeChild(row)}else{if(next){r.set.text.end(r,[next])}else{item=row.cloneNode(!0);item.className="table-row";var children=item.children;for(child in children){children[child].innerHTML=r.handlers.table.element.default}
-if(row.nextElementSibling){parent.insertBefore(item,row.nextElementSibling)}else{parent.appendChild(item)}
-r.set.text.start(r,[item])}}}},8:function(r){var cell=r.focused[r.focused.length-1][0];var row=cell.parentElement;var prev=r.focused[r.focused.length-1][1];var parent=row.parentElement;var block=parent.parentElement;var text=row.textContent.replace(/(?:\\[rn]|[\r\n]+)+/g,"");var cell_text=cell.textContent.replace(/(?:\\[rn]|[\r\n]+)+/g,"");if(text.length===0){r.e.preventDefault();console.log(row.previousElementSibling)
-console.log(row)
-if(row.previousElementSibling){r.set.text.end(r,[row.previousElementSibling])}else if(block.previousElementSibling){r.set.text.start(r,[block.previousElementSibling])}
-row.parentElement.removeChild(row)}else if(cell_text.length===0){r.e.preventDefault();if(prev){r.set.text.end(r,[prev])}else if(row.previousElementSibling){r.set.text.end(r,[row.previousElementSibling])}}},9:function(r){r.e.preventDefault();var cell=r.focused[r.focused.length-1][0];var row=cell.parentElement;var next=r.focused[r.focused.length-1][2];var parent=row.parentElement;var block=parent.parentElement;if(r.t===3){if(next){r.set.text.start(r,[next])}else if(row.nextElementSibling){r.set.text.start(r,[row.nextElementSibling])}}},mouseup:function(r){r.selectors.hide(r)},keyup:function(r){r.selectors.hide(r)},selection:function(r){var cell=r.focused[r.focused.length-1][0];var row=cell.parentElement;if(row.className==='table-heading'){r.modifiers.hide(r)}},paste:function(r){r.e.preventDefault()}},},expandable:{block:'<div class="block"><div class="expandable"></div></div>',item:{default:'<div class="hide"><button onClick="this.parentElement.className=this.parentElement.className===\'hide\'?\'show\':\'hide\'">Sample Item<br></button><div class="content"><div class="block"><div class="paragraph"><p><span><br></span></p></div></div></div></div>'},set:function(r,p){var option=p[0];var block=r.get.markup(r,[r.handlers.expandable.block]);var item;switch(option){case 'default':item=r.get.markup(r,[r.handlers.expandable.item.default]);block.firstElementChild.appendChild(item);break}
-return block},triggers:{13:function(r){var f=r.focused[0][0];if(r.t===3){var item;if(f.tagName.toLowerCase()==="button"){item=r.focused[1][0]}else{item=r.focused[r.focused.length-1][0].parentElement}
-var text=item.innerText.replace(/(?:\\[rn]|[\r\n]+)+/g,"");if(text.length===0){r.e.preventDefault();var block=item.parentElement.parentElement;var parent=block.parentElement;var _new=r.get.markup(r,[r.handlers.paragraph.block]);if(block.nextElementSibling){parent.insertBefore(_new,block.nextElementSibling)}else{parent.appendChild(_new)}
-item.parentElement.removeChild(item);r.set.text.start(r,[_new])}else if(f.tagName.toLowerCase()==="button"){r.e.preventDefault();r.set.text.start(r,[f.nextElementSibling])}else if(f.innerText.length<2){r.e.preventDefault();var new_node=r.get.markup(r,[r.handlers.expandable.item.default]);new_node.firstElementChild.innerHTML="<br>";var parent=r.focused[r.focused.length-1][0].parentElement;if(parent.nextElementSibling){parent.parentElement.insertBefore(new_node,parent.nextElementSibling)}else{parent.parentElement.appendChild(new_node)}
-if(f.parentElement.innerText>1){f=f.parentElement;f.parentElement.removeChild(f)}
-r.set.text.end(r,[new_node.firstElementChild]);if(r.focused[2][0].innerText.length>1){r.focused[2][0].removeChild(r.focused[1][0])}}}},8:function(r){var f=r.focused[0][0]
-if(r.t===3){if(f.tagName.toLowerCase()==="button"){if(f.innerText.length<2&&r.caret.position<2){r.e.preventDefault();r.focused[0][0].innerHTML="<br>"}else if(r.caret.position<1){r.e.preventDefault()}}}},selection:function(r){if(r.focused[0][0].tagName.toLowerCase()!=='button'){r.modifiers.show(r,["modifier-text"])}},mouseup:function(r){var focused=r.focused[0][0];if(focused.tagName.toLowerCase()==="button"){console.log(r.caret.position)
-r.set.text.position(r,[focused,r.caret.position])}},paste:function(r){r.e.preventDefault()}},},},modifiers:{init:function(r){var block=document.createElement("div");block.innerHTML=r.modifiers.block;block=block.firstElementChild;r.modifiers.block=block;r.body.appendChild(block);var groups=r.modifiers.groups;var ep,ei,eg,items;for(group in groups){eg=document.createElement("div");eg.id=group;eg.style.display="none";items=groups[group].items;for(item in items){(function(){var i=items[item];ep=document.createElement("div");ei=document.createElement("img");ei.draggable=!1;ei.src=i[0];ep.addEventListener("click",function(){i[3](r);r.modifiers.hide(r)});ep.appendChild(ei);eg.appendChild(ep)})()}
-block.insertBefore(eg,block.lastElementChild)}},show:function(r,p){var se=r.selection.children[0];var ee=r.selection.children[r.selection.children.length-1];if(se.parentElement===ee.parentElement){r.modifiers.active=!0;document.getElementById(p[0]).style.display="block";var box=r.selection.box;r.modifiers.block.style.display="block";var left=(box.width/2)-(r.modifiers.block.offsetWidth/2)+box.left;var top=box.y-r.modifiers.block.offsetHeight+document.documentElement.scrollTop
-r.modifiers.block.style.left=left+"px";r.modifiers.block.style.top=top+"px"}},hide:function(r){r.modifiers.active=!1;var groups=r.modifiers.block.children;for(var i=0;i<groups.length;i++){groups[i].tagName.toLowerCase()==="div"?groups[i].style.display="none":null}
-r.modifiers.block.style.display="none"},block:'<div id="modifier" class="block"><img/></div>',groups:{"modifier-text":{items:{bold:["https://rumcore.github.io/writable.ai/assets/icons/svg/white/modifier-bold.svg",-1,-1,function(r){var element=document.createElement("b");r.set.text.modify(r,[element])}],link:["https://rumcore.github.io/writable.ai/assets/icons/svg/white/modifier-link.svg",-1,-1,function(r){var params={title:'Add URL'};params.styles={padding:"24px",width:"360px"}
-params.inputs=[["textarea",{id:'mod-url',rows:4}]]
-params.options={}
-params.options.done=function(r){var element=document.createElement("a");element.href=document.getElementById('mod-url').value;r.selection=r.dialog.selection;r.set.text.modify(r,[element])}
-r.dialog.show(r,[params])}],mark:["https://rumcore.github.io/writable.ai/assets/icons/svg/white/modifier-mark.svg",-1,-1,function(r){console.log("do some mark shit..")
-var element=document.createElement("mark");r.set.text.modify(r,[element])}],},},"modifier-heading":{items:{drop:["https://rumcore.github.io/writable.ai/assets/icons/svg/white/modifier-drop.svg",-1,-1,function(r){console.log("do some drop cap shit..")}],italic:["https://rumcore.github.io/writable.ai/assets/icons/svg/white/modifier-italic.svg",-1,-1,function(r){console.log("do some italic shit..")}],mark:["https://rumcore.github.io/writable.ai/assets/icons/svg/white/modifier-mark.svg",-1,-1,function(r){console.log("do some mark shit..")}],},}}},selectors:{init:function(r){var block=r.get.markup(r,[r.selectors.block])
-r.selectors.block=block;block.contentEditable=!1;block.getElementsByTagName("img")[0].src="https://rumcore.github.io/writable.ai/assets/icons/svg/black/selector-add.svg";r.selectors.block.firstElementChild.style.display="none";r.selectors.block.lastElementChild.style.display="none";block.firstElementChild.addEventListener("click",function(e){if(this.nextElementSibling.style.display==="inline-block"){this.nextElementSibling.style.display="none";this.getElementsByTagName("img")[0].src="https://rumcore.github.io/writable.ai/assets/icons/svg/black/selector-add.svg"}else{this.nextElementSibling.style.display="inline-block";this.getElementsByTagName("img")[0].src="https://rumcore.github.io/writable.ai/assets/icons/svg/black/selector-close.svg"}});r.body.appendChild(block);var items=r.selectors.items;var ep,ei;for(item in items){(function(){var i=items[item];ep=document.createElement("div");ei=document.createElement("img");ep.id=item;ei.src=items[item][0];ei.title=item.replace("selector-","");ei.style.outline="none"
-ei.draggable=!1;ei.addEventListener("click",function(){i[3](r)})
-ep.appendChild(ei)
-block.lastElementChild.appendChild(ep)})()}},show:function(r,p){r.selectors.focused=r.focused;var left=r.focused[0][0].offsetLeft-120;var top=r.focused[0][0].offsetTop-18;r.selectors.active=!0;r.selectors.block.firstElementChild.style.display="inline-block"
-r.selectors.block.style.left=left+"px";r.selectors.block.style.top=top+"px"},hide:function(r){r.selectors.active=!1;r.selectors.block.firstElementChild.getElementsByTagName("img")[0].src="https://rumcore.github.io/writable.ai/assets/icons/svg/black/selector-add.svg"
-r.selectors.block.firstElementChild.style.display="none";r.selectors.block.lastElementChild.style.display="none"},block:'<div id="selector" class="block"><div class="toggle"><div><img/></div></div><div class"options"></div></div>',items:{"selector-text":["https://rumcore.github.io/writable.ai/assets/icons/svg/black/selector-text.svg",-1,-1,function(r){var params={};params.styles={padding:"0px",width:"360px"};params.buttons=[["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-heading.svg","Heading",function(){var items=r.set.block.split(r,[r.selectors.focused]);var block=r.get.markup(r,[r.handlers.heading.block]);items[1].parentElement.replaceChild(block,items[1]);r.set.text.end(r,[block]);r.selectors.hide(r);r.dialog.hide(r)}],["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-quote.svg","Quote",function(){var items=r.set.block.split(r,[r.selectors.focused]);var block=r.get.markup(r,[r.handlers.quote.block]);items[1].parentElement.replaceChild(block,items[1]);r.set.text.end(r,[block]);r.selectors.hide(r);r.dialog.hide(r)}],["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-tip.svg","Note",function(){var items=r.set.block.split(r,[r.selectors.focused]);var block=r.get.markup(r,[r.handlers.note.block]);items[1].parentElement.replaceChild(block,items[1]);r.set.text.end(r,[block]);r.selectors.hide(r);r.dialog.hide(r)}]]
-r.dialog.show(r,[params])}],"selector-image":["https://rumcore.github.io/writable.ai/assets/icons/svg/black/selector-image.svg",'<div class="block" contenteditable="false"><div class="upload"><div><img src="https://rumcore.github.io/writable.ai/assets/icons/svg/black/selector-image.svg" /><br><span>Drag & Drop image or </span><a> click here</a><span> to add image URL.</span></div></div></div>',-1,function(r){var items=r.set.block.split(r,[r.selectors.focused]);var block=r.get.markup(r,[this[1]]);items[1].parentElement.replaceChild(block,items[1]);var img=r.get.markup(r,[r.handlers.image.block]);console.log(img)
-var a=block.getElementsByTagName("a")[0];a.addEventListener("click",function(){var params={title:'Add Image URL'};params.styles={padding:"24px",width:"360px"}
-params.inputs=[["textarea",{id:'img-url',rows:4}]]
-params.options={}
-params.options.done=function(r){var src=document.getElementById("img-url").value;var img=r.get.markup(r,[r.handlers.image.block]);var img_tag=img.getElementsByTagName("img")[0];img_tag.src=src;block.parentElement.replaceChild(img,block)}
-r.dialog.show(r,[params])});r.element.addEventListener("dragover",function(p){},!1);r.element.addEventListener("drop",function(p){console.log("drop Image");r.set.image.upload(r,function(p){var src=p[0];var srcset=p[1];var img_tag=img.getElementsByTagName("img")[0];img_tag.src=src;img_tag.srcset=srcset;block.parentElement.replaceChild(img,block)})},!1);r.selectors.hide(r)}],"selector-list":["https://rumcore.github.io/writable.ai/assets/icons/svg/black/selector-list.svg",-1,-1,function(r){var params={};params.styles={padding:"0px",width:"360px"};params.buttons=[["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-unordered.svg","Bulleted",function(){var items=r.set.block.split(r,[r.selectors.focused]);var block=r.get.markup(r,[r.handlers.list.block.unordered]);items[1].parentElement.replaceChild(block,items[1]);r.set.cursor.end(r,[block.firstElementChild.firstElementChild.firstElementChild]);r.selectors.hide(r);r.dialog.hide(r)}],["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-ordered.svg","Numbered",function(){var items=r.set.block.split(r,[r.selectors.focused]);var block=r.get.markup(r,[r.handlers.list.block.ordered]);items[1].parentElement.replaceChild(block,items[1]);r.set.cursor.end(r,[block.firstElementChild.firstElementChild.firstElementChild]);r.selectors.hide(r);r.dialog.hide(r)}],["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-expandable.svg","Expandable",function(){var items=r.set.block.split(r,[r.selectors.focused]);var block=r.handlers.expandable.set(r,["default",items[1]])
-items[1].parentElement.replaceChild(block,items[1]);r.selectors.hide(r);r.dialog.hide(r)}]]
-r.dialog.show(r,[params])}],"selector-table":["https://rumcore.github.io/writable.ai/assets/icons/svg/black/selector-table.svg",-1,-1,function(r){var items=r.set.block.split(r,[r.selectors.focused]);var block=r.handlers.table.set(r,["default",items[1]])
-items[1].parentElement.replaceChild(block,items[1]);r.selectors.hide(r);r.dialog.hide(r)}],}},dialog:{init:function(r){var block=document.createElement("div");block.innerHTML=r.dialog.block;block=block.firstElementChild;block.contentEditable=!1;r.dialog.block=block;r.dialog.block.addEventListener("click",function(e){console.log(e.target)
-if(e.target.id==='dialog'){r.dialog.hide(r)}});r.body.appendChild(block)},show:function(r,p){var params=p[0];r.dialog.selection=r.selection;r.dialog.active=!0;r.dialog.block.style.display="block";for(param in params){if(r.dialog.items[param]){r.dialog.items[param](r,[params[param]])}}},hide:function(r){r.selection=r.dialog.selection;r.dialog.active=!1;r.dialog.block.style.display="none";r.dialog.block.firstElementChild.innerHTML=""},block:'<div id="dialog" class="block"><div></div><div></div></div>',items:{styles:function(r,p){var dialog=r.dialog.block.firstElementChild;var styles=p[0];for(style in styles){dialog.style[style]=styles[style]}},title:function(r,p){var title=document.createElement("h5");var span=document.createElement("span");span.innerHTML=p[0];title.appendChild(span);r.dialog.block.firstElementChild.appendChild(title)},buttons:function(r,p){var item=document.createElement("button");var icon=document.createElement("img");var label=document.createElement("div");var items=p[0];for(_item in items){(function(){var i=items[_item]
-item=item.cloneNode();icon=icon.cloneNode();label=label.cloneNode();icon.src=i[0];label.innerHTML=i[1];item.addEventListener("click",function(){i[2](r)});item.appendChild(icon);item.appendChild(label);r.dialog.block.firstElementChild.appendChild(item)})()}},inputs:function(r,p){var inputs=p[0];for(input in inputs){var wrapper=document.createElement("div");var element=document.createElement(inputs[input][0]);var attributes=inputs[input][1];wrapper.className="input";for(attribute in attributes){element.setAttribute(attribute,attributes[attribute])}
-wrapper.appendChild(element)
-r.dialog.block.firstElementChild.appendChild(wrapper)}},options:function(r,p){var options=document.createElement("div");options.className="options";var cancel=document.createElement("button");var done=document.createElement("button");cancel.innerHTML="Cancel";done.innerHTML="Done";cancel.addEventListener("click",function(){r.dialog.hide(r)});done.addEventListener("click",function(){p[0].done(r);r.dialog.hide(r)});options.appendChild(cancel);options.appendChild(done);r.dialog.block.firstElementChild.appendChild(options)}}}};window.addEventListener('load',function(){writable.init(writable)},!1)
+const writable = {
+	
+	data : {},
+	
+	init : function(r){ 
+		r.host = "https://rumcore.github.io/writable.ai/v2/";
+		
+		r.element = document.getElementById('writable');
+		r.body    = document.body;
+		//r.element.innerHTML =  r.element.innerHTML.replace(/\s+/g, '');
+		r.element.innerHTML = r.element.innerHTML.split(/\>[\n\t\s]*\</g).join('><').split(/[\n\t]*/gm).join('')
+		
+		//r.selectors.init(r);
+		r.dialog.init(r);
+		
+		r.triggers = ['mouseup','mousedown','keyup','keydown'];
+		r.element.addEventListener('mouseup',function(e){r.set.action(r,[e,0])});
+		r.element.addEventListener('mousedown',function(e){r.set.action(r,[e,1])});
+		r.element.addEventListener('keyup',function(e){r.set.action(r,[e,2])});
+		r.element.addEventListener('keydown',function(e){r.set.action(r,[e,3])});
+		window.addEventListener("dragover",function(e){e=e||event;e.preventDefault();});
+		window.addEventListener("drop",function(e){e=e||event;e.preventDefault();});
+		
+		//var style = document.createElement('style');
+		//document.head.appendChild(style);
+		
+		r.element.setAttribute('contentEditable','true');
+		
+		//var s_blocks     = document.createElement('script');
+		var s_selectors  = document.createElement('script');
+		var s_modifiers  = document.createElement('script');
+		//s_blocks.type    = "text/javascript";
+		s_selectors.type = "text/javascript";
+		s_modifiers.type = "text/javascript";
+		//s_blocks.addEventListener("load",function(){
+			document.getElementsByTagName("head")[0].appendChild(s_selectors);
+		//});
+		s_selectors.addEventListener("load",function(){
+			r.selectors = selectors;
+			r.selectors.init(r.selectors,[r,r.dialog,r.collections]);
+			document.getElementsByTagName("head")[0].appendChild(s_modifiers);
+		});
+		s_modifiers.addEventListener("load",function(){
+			r.modifiers = modifiers;
+			r.modifiers.init(r.modifiers,[r,r.dialog,r.collections]);
+			
+			r.element.innerHTML += "<div id='writable-end'></div>";
+		});		
+
+		//s_blocks.src    = r.host+"blocks.js";
+		s_selectors.src = r.host+"selectors.js";
+		s_modifiers.src = r.host+"modifiers.js";
+		//document.getElementsByTagName("head")[0].appendChild(s_blocks);
+		
+		for(collection in r.collections){
+			var item = r.collections[collection];
+			if(item.actions){
+				item.actions.init ? item.actions.init(r,[r.element,item]):null;
+			}
+		}
+		
+	},
+	api : {
+		set : {
+			image : {upload : null}
+		}	
+	},
+	set : {
+		state : {
+			active : function(r){
+				r.element.setAttribute('contentEditable','true');
+				r.element.firstChild ? r.set.caret.start(r,[r.element.firstChild]) : null;
+			}
+		},
+		action : function(r,p){
+			
+			var range  = window.getSelection().rangeCount > 0 ? window.getSelection().getRangeAt(0) : null;
+			
+			if(range && range.startContainer){
+				var target     = range.startContainer;
+				target = target.nodeType !== 1 ? target.parentElement : target;
+				var collection = r.get.target.collection(r,[target])
+				if(collection){
+					r.event  	 = p[0];
+					r.trigger	 = p[1];
+					r.range      = range;
+					r.collection = collection;
+					if(r.event.keyCode&&r.set.target.trigger[r.event.keyCode]){
+						r.set.target.trigger[r.event.keyCode](r,[collection])
+					}
+					r.selectors.toggle(r,[collection]);
+					r.modifiers.toggle(r.modifiers,[collection]);
+				}
+			}	
+		},
+		caret : {
+			end : function(r,p){
+				var target = p[0],end;
+				while(target){
+					end = target;
+					target = target.lastElementChild;
+				}
+				var range = document.createRange();
+				var sel   = window.getSelection();
+				if(end.tagName==='BR' && end.previousSibling ){
+					end = end.previousSibling;
+				}
+				range.selectNodeContents(end);
+				range.collapse(false);
+
+				sel.removeAllRanges();
+				sel.addRange(range);
+			},
+			start : function(r,p){
+				var target = p[0],start;
+				while(target){
+					start = target;
+					target = target.firstElementChild;
+				}
+				window.getSelection().collapse(start,0);
+				//window.scrollTo(0,start.offsetTop)
+			},
+			position : function(r,p){
+				var element = p[0].firstChild
+				if(element.tagName === 'BR' && element.previousSibling){
+					element = element.previousSibling;
+				}
+				window.getSelection().collapse(element,p[1]);
+			},
+			prev : function(r,p){
+				var target = p[0];
+				while(!target.previousElementSibling){target = target.parentElement;}
+				target = target.previousElementSibling;
+				if(p[1]===0){
+					r.set.caret.start(r,[target]);
+				}else{
+					r.set.caret.end(r,[target])
+				}
+			},
+			next : function(r,p){
+				var target = p[0];
+				while(!target.nextElementSibling){target = target.parentElement;}
+				target = target.nextElementSibling;
+				
+				if(target && (target.id==="writable-end")){
+					r.event.preventDefault();
+					console.log(target.id)
+					if(r.collection[1][0].className !== 'paragraph'){
+						console.log("in")
+						var col = r.set.target.insert(r,['paragraph','default']);
+						target.parentElement.insertBefore(col,target);
+						r.set.caret.start(r,[col])
+					}
+				}else{
+					if(p[1]===0){
+						r.set.caret.start(r,[target]);
+					}else{
+						r.set.caret.end(r,[target])
+					}
+				}
+			}
+		},
+		target : {
+			trigger : {
+				8 : function(r,p){
+					
+					if(r.trigger===3){
+						
+						var collection = p[0][0];
+						var stack 	   = p[0][1];
+						var block      = p[0][2][0];
+						var item       = p[0][2][1];
+						var element    = p[0][2][2];
+						var position = window.getSelection().focusOffset;
+						var trigger  = r.get.property(r,[p[0],["triggers","8"]]);
+						trigger = trigger ? trigger.toString() : "0";
+						
+						var el = r.get.target.text([element]).length;
+						var bl = r.get.target.text([block]).length;
+						var cl = r.get.target.text([stack[0]]).length;	
+						if(el===1 && (item.children.length === 1||block.children.length === 1)){
+							r.event.preventDefault();
+							element.innerHTML = "<BR>";
+						}else if(bl === 0 && !item.previousElementSibling){
+							r.event.preventDefault();
+							if(stack[0].previousElementSibling&&stack[0].previousElementSibling.contentEditable !== "false"){
+								r.set.caret.prev(r,[block,1])
+								block.parentElement.removeChild(block);
+								// **check for empty container
+								if(cl === 0){stack[0].parentElement.removeChild(stack[0])}
+							}
+							
+						}else if(position===0){
+							switch(trigger){
+								case '0':
+									r.event.preventDefault();
+									r.set.caret.prev(r,[element]);
+									break;
+								case '1':
+									r.event.preventDefault();
+									var prev = block.previousElementSibling ? block.previousElementSibling:item.previousElementSibling;
+									if(prev){
+										var html  = prev.nextElementSibling.innerHTML;
+										var count = prev.children.length
+										var pl    = r.get.target.text([prev]).length;
+										if(pl===0){
+											prev.innerHTML = html;
+											r.set.caret.start(r,[prev]);
+										}else{
+											prev.innerHTML += html;
+											r.set.caret.end(r,[prev.children[count-1]]);
+										}
+										prev.nextElementSibling.parentElement.removeChild(prev.nextElementSibling);
+									}else{
+										r.set.caret.prev(r,[element]);
+									}
+									break;
+								case '2':
+								break;	
+								case '3':
+									if(item.children.length === 1){
+										r.event.preventDefault();
+										r.set.caret.prev(r,[element,1])
+									}
+								break;	
+							}
+
+						}
+						
+						
+					}
+
+				},	
+				9 : function(r,p){r.event.preventDefault();},
+				13 : function(r,p){
+					
+					if(r.trigger===3){
+						var collection = p[0][0];
+						var stack 	   = p[0][1];
+						var block      = p[0][2][0];
+						var item       = p[0][2][1];
+						var element    = p[0][2][2];
+						var position = window.getSelection().focusOffset;
+						var trigger  = r.get.property(r,[p[0],["triggers","13"]]);
+						trigger = trigger ? trigger.toString() : "0";
+						
+						switch(trigger){
+							case '0':
+								r.event.preventDefault();
+								r.set.caret.next(r,[stack[stack.length-1],0]);
+								break;
+							case '1':
+								if(r.get.target.text([block]).length===0||r.get.target.text([item]).length===0){
+									r.event.preventDefault();
+									r.set.caret.next(r,[block,0]);
+								}
+							break;
+							case '2':
+								r.event.preventDefault();
+								r.set.caret.next(r,[target,0]);
+								break;
+							case '3':
+								r.event.preventDefault();
+								if(!item.nextElementSibling){
+									r.set.target.block(r,[stack,collection]);
+								}else{
+									r.set.caret.next(r,[item,0]);
+								}
+								break;
+							case '4':
+								r.event.preventDefault();
+								r.set.target.block(r,[stack,collection]);
+								break;	
+							case '5':
+								r.event.preventDefault();
+								var el = r.get.target.text([element]).length;
+								var next = element.nextElementSibling;
+								if(el>0){
+									r.set.target.element(r,[collection,block,element]);
+								}else if(el===0 && next){
+									console.log("remove")
+									r.set.caret.next(r,[element,1]);
+									item.removeChild(element)
+								}else{
+									item.removeChild(element)
+									r.set.caret.next(r,[block,0])
+								}
+								break;
+							
+						}
+						
+					}
+				},
+				49 : function(r,p){},
+			},
+			node : function(p){
+				var html = p[0];
+				var node = document.createElement("div");
+				node.innerHTML = html;
+				return node.firstElementChild;
+			},
+			append : function(r,p){
+				var stack = p[0];
+				var item  = p[1];
+				if(stack[3].nextElementSibling){
+					stack[2].insertBefore(item,stack[3].nextElementSibling)
+				}else{
+					stack[2].appendChild(item);
+				}
+			},
+			clone : function(r,p){
+				var stack = p[0];
+				var block = p[1];
+				var clone;
+				var item = block.markup.items[stack[3].className];
+				if(item){
+					clone = r.set.target.node([item]);
+				}else{
+					clone = r.get.target.clone(r,[stack[3]])
+				}
+				
+				var next  = stack[3].nextElementSibling;
+				next?stack[2].insertBefore(clone,next):
+				stack[2].appendChild(clone);
+				r.set.caret.start(r,[clone]);
+			},
+			splice : function(r,p){
+				var collection = r.collection[1][0];
+				var container  = r.collection[1][0];
+				var item      = r.collection[1][0];
+				var block      = r.collection[2][0];
+				
+				
+					var pre = collection.cloneNode(true);
+					pre.firstElementChild.innerHTML = "";
+
+					while(block.previousElementSibling){pre.firstElementChild.appendChild(block.previousElementSibling)}
+				
+					collection.parentElement.insertBefore(p[0],collection);
+					collection.parentElement.insertBefore(pre,p[0]);
+					p[1].parentElement.removeChild(p[1]);
+					
+					if(collection.nextElementSibling.id === "writable-end"){
+						collection.parentElement.removeChild(collection);
+					}
+					r.set.caret.start(r,[p[0]])
+				
+				
+			},
+			element : function(r,p){
+				
+				var collection = p[0];
+				var block      = p[1];
+				var target     = p[2];
+				
+				var html = collection.markup.elements[target.className];
+				if(html){
+					var next    = target.nextElementSibling;
+					var element = document.createElement("div");
+					element.innerHTML = html;
+					element = element.firstElementChild;
+					if(next){
+						target.parentElement.insertBefore(element,next);
+					}else{
+						target.parentElement.appendChild(element);
+					}
+					r.set.caret.end(r,[element])
+				}
+			},
+			block : function(r,p){
+				
+				var stack = p[0];
+				var collection = p[1];
+				
+				var html = collection.markup.blocks[stack[2].className];
+				if(html){
+					var next = stack[2].nextElementSibling;
+					var block = document.createElement("div");
+					block.innerHTML = html;
+					block = block.firstElementChild;
+					if(next){
+						stack[1].insertBefore(block,next);
+					}else{
+						stack[1].appendChild(block);
+					}
+					r.set.caret.start(r,[block])
+				}
+			},
+			insert : function(r,p,c){
+				var ref    = r.collections[p[0]];
+				var markup = ref.markup.styles[p[1]];
+				var collection = r.set.collection(r,[ref,markup]);
+				r.set.caret.start(r,[collection]);
+				return collection
+			},
+		},		
+		collection : function(r,p){
+			var ref = p[0];
+			var collection = ref.markup.collection[p[1][0]];
+			var element    = document.createElement('div');
+			element.innerHTML = collection;
+			collection = element.firstElementChild;
+			collection.innerHTML = ref.markup.containers[p[1][1]];
+			collection.firstElementChild.innerHTML = ref.markup.blocks[p[1][2]];
+			return collection;
+		}
+	},
+	get : {
+		html : function(r,p){
+			var div = document.createElement("div");
+			div.innerHTML = p[0];
+			return div.firstElementChild;
+		},
+		target : {
+			text : function(p){
+				return p[0]?p[0].textContent.replace(/[\n\r]+|[\s]{2,}/g,' ').trim():-1;
+			},
+			collection : function(r,p){
+				var target = p[0];
+				var items  = [],block;
+				var collection = r.collections[target.className];
+				
+				while(!collection && target){
+					items[items.length] = target;
+					collection = r.collections[target.className];
+					target = target.parentElement;
+				}
+				items = items.reverse();
+				target = items[items.length-1];
+				target = target.tagName==='BR'?target.parentElement:target;
+				target = [items[2],items[3],items[items.length-1]];
+				return collection ? [collection,items,target] : undefined;
+			},
+			clone : function(r,p){
+				var clone = p[0].cloneNode(true);
+				var elements = clone.children,target,start;
+				for(i=0;i<elements.length;i++){
+					target = elements[i];
+					start = null;
+					while(target){
+						start  = target;
+						target = target.firstElementChild;
+					}
+					target=start.tagName==='BR'||start.nodeType!==1?start.parentElement:start;
+					target.innerHTML = '<br>';
+				}
+				return clone;
+			}
+		},
+		property : function(r,p){
+			var obj   = p[0][0];
+			var items = p[0][1];
+			var paths = p[1];
+			for(path in paths){obj=obj?obj[paths[path]]:undefined;}
+			var count = 0,property;
+			if(obj){
+				for(item in items){
+					count++;
+					var i = items[item];
+					var classes = i.classList;
+					for(var c = 0;c<classes.length;c++){
+						property = obj[classes[c]];
+						if(property!==undefined){break;}
+					}
+					if(property === undefined){
+						property = obj[i.tagName.toLowerCase()];
+					}
+					if(property!==undefined){break;}
+				}
+				return property;
+			}else{
+				return undefined;
+			}
+		},
+	},
+	
+	collections : {
+		
+		paragraph : {
+			markup : {
+				styles    	: {"default":['paragraph','container','p']},
+				collection  : {'paragraph':'<div class="paragraph"></div>'},
+				containers  : {'container':'<div class="container"></div>'},
+				blocks      : {'p':'<p><span><br></span></p>'}
+			},
+			triggers : {13:{p:1},8:{p:1}},
+			selector : {'p':true},
+			modifier : {'a':["modifier-link",1],'span':["modifier-text",0]}
+		},
+		heading : {
+			
+			markup : {
+				styles    	: {"default":['heading','container','h3']},
+				collection  : {'heading':'<div class="heading"></div>'},
+				containers  : {'container':'<div class="container"></div>'},
+				blocks      : {'h3':'<h3><span>Sample Heading</span></h3>'}
+			},
+			selector : {'div':false}
+		},
+		quote : {
+			markup : {
+				styles    	: {"default":['quote','container','blockquote']},
+				collection  : {'quote':'<div class="quote"></div>'},
+				containers  : {'container':'<div class="container"></div>'},
+				blocks      : {'blockquote':'<blockquote><span>If you don\'t know where your going, any road will get you there.</span><cite>Jane Doe, Mrs Insightful</cite></blockquote>'}
+			},
+		},		
+		
+		note : {
+			markup : {
+				styles    	: {"default":['note','container','note']},
+				collection  : {'note':'<div class="note"></div>'},
+				containers  : {'container':'<div class="container"></div>'},
+				blocks      : {'note':'<div class="item"><h5 class="item-heading">Note:</h5><div class="item-txt">This information is important to you.</div></div>'}
+			},
+		},			
+
+		image : {
+			markup : {
+				styles    	: {"default":['image','container','upload'],
+							   "basic":['image','container','basic']},
+				collection  : {'image':'<div class="image" contenteditable="false"></div>'},
+				containers  : {'container':'<div class="container"></div>'},
+				blocks      : {
+								'upload':'<div class="upload" contenteditable="false"><div class="upload-item"><img class="upload-item-img" src="https://rumcore.github.io/writable.ai/v2/icons/svg/black-selector-image.svg"/><span>Drag & Drop image or </span><a class="upload-item-link">click here </a><span>to add image URL.</span></div></div>',
+								'basic' : '<div class="basic"><img class="basic-img"/></div>'
+							  },
+			},
+			actions : {
+				init : function(r,p){
+					var items      = p[0].getElementsByClassName("image");
+					var collection = p[1];
+					for(var i=0;i<items.length;i++){
+						collection.actions.set.uploader(r,[items[i]]);
+					}
+				},
+				set : {
+					uploader : function(r,p){
+						var collection = p[0];
+						var container = collection.firstElementChild;
+						container.addEventListener("click",function(p){
+							var params    = {title:'Add Image URL'};
+							params.styles = {padding:"24px",width:"360px"}
+							params.inputs = [["textarea",{id:'img-url',rows:4}]]
+							params.options = {}
+							params.options.done = function(r){
+								var src = document.getElementById("img-url").value;
+								var e = document.createElement('div');
+								e.innerHTML = r.collections["image"].markup.blocks["basic"];
+								var img = e.firstElementChild;
+								img.firstElementChild.src = src;
+								container.replaceChild(img,container.firstElementChild);
+								r.dialog.hide(r);
+							}
+							r.dialog.show(r,[params]);
+						});
+						container.addEventListener("dragover",function(p){},false);
+						container.addEventListener("drop",function(p){
+						r.api.set.image.upload(r,function(p){
+							var src    = p[0];
+							var srcset = p[1];
+							var e = document.createElement('div');
+							e.innerHTML = r.collections["image"].markup.blocks["basic"];
+							var img = e.firstElementChild;
+							img.firstElementChild.src = src;
+							img.srcset = srcset;
+							container.replaceChild(img,container.firstElementChild);
+						});
+					},false);
+						
+					}
+				}
+			}
+		},			
+		
+		list : {
+			markup : {
+				styles    	: {
+								"default" :['list','container','bullet'],
+								"numbered":['list','container','numbered'],
+								"alphabetical":['list','container','alphabetical'],
+								"icon"	  :['list','container','icon']
+							  },
+				collection  : {'list':'<div class="list"></div>'},
+				containers  : {'container':'<div class="container"></div>'},
+				blocks      : {'bullet':'<ul class="unordered"><li class="unordered-item"><span>List Item.</span></li></ul>',
+							   'numbered':'<ol class="ordered"><li class="ordered-item"><span>List Item.</span></li></ol>',
+							   'alphabetical':'<ol type="A" class="ordered"><li class="ordered-item"><span>List Item.</span></li></ol>',
+							   'icon':'<ul class="icon"><li class="icon-item"><span>List Icon Item.</span></li></ul>'
+							  },
+				
+			},
+			triggers : {13:{li:1},8:{li:1}},
+			selector : false,
+			actions : {
+				set : {
+					icon : function(p){
+						var collection = p[0];
+						var elements = collection.getElementsByTagName("li");
+						for(var i = 0;i<elements.length;i++){
+							elements[i].style.backgroundImage = "url('"+p[1]+"')";
+						}
+					}
+				}
+				
+			},
+		},
+		expandable : {
+			markup : {
+				styles    	: {"default" :['expandable','border','item'],
+							   "resources" :['expandable','container','resource']},
+				collection  : {'expandable':'<div class="expandable"></div>'},
+				containers  : {
+								'border':'<div class="container border"></div>',
+								'container':'<div class="container"></div>'
+							  },
+				blocks : {
+					"item":'<div class="item"><div class="item-toggle show">Sample Title</div><div class="item-content"><div class="paragraph"><div class="container"><p><span>Details</span></p></div></div></div></div>',
+					"resource":'<div class="resource"><div class="resource-toggle show">Title</div><div class="resource-list"><a class="resource-list-item" href="">Sample 1</a></div></div>'
+				},
+				elements : {'resource-list-item':'<a class="resource-list-item" href=""><br></a>'} 
+			},
+			triggers : {13:{"item-toggle":4,"resource-toggle":4,"resource-list-item":5},
+					   8:{"resource-list-item":3}},
+			selector : {"content":true}
+		},
+		table : {
+			markup : {
+				styles    	: {"default" :['table','container','default'],
+							   "heading" :['table','container','heading'],
+							   "row" :['table','container','row'],},
+				collection  : {'table':'<div class="table"></div>'},
+				containers  : {'container':'<div class="container"></div>'},
+				blocks : {
+					'default':'<div class="row"><div class="row-heading _4"><span>Column 1</span></div><div class="row-heading _4"><span>Column 2</span></div><div class="row-heading _4"><span>Column 3</span></div></div><div class="row"><div class="row-cell _4"><span><br></span></div><div class="row-cell _4"><span><br></span></div><div class="row-cell _4"><span><br></span></div></div>',
+					'heading':'<div class="row"><div class="row-heading _4"><span>Column 1</span></div><div class="row-heading _4"><span>Column 2</span></div><div class="row-heading _4"><span>Column 3</span></div></div>',
+					'row':'<div class="row"><div class="row-cell _4"><span><br></span></div><div class="row-cell _4"><span><br></span></div><div class="row-cell _4"><span><br></span></div></div>'
+				}
+			},
+			triggers : {13:{"row-cell":3}},
+			selector : false
+		},
+		
+
+	},
+	
+	
+	
+	dialog : {
+		init : function(r){
+			var block = r.get.html(r,[this.block]);
+			block.addEventListener("click",function(e){
+				if(e.target.id === 'dialog'){r.dialog.hide(r);}
+			});
+			document.body.appendChild(block);
+			this.block = block;
+		},
+		show : function(r,p){
+			var params = p[0];
+			r.dialog.selection = r.selection;
+			r.dialog.active = true;
+			r.dialog.block.style.display = "block";
+			
+			for(param in params){
+				if(r.dialog.items[param]){
+					r.dialog.items[param](r,[params[param]])
+				}
+			}
+		},
+		hide : function(r){
+			r.selection = r.dialog.selection;
+			r.dialog.active = false;
+			r.dialog.block.style.display = "none";
+			r.dialog.block.firstElementChild.innerHTML = "";
+		},
+		block : '<div id="writable-dialog" class="writable-dialog"><div class="panel"></div><div class="av"></div></div>',
+		items : {
+			styles : function(r,p){
+				var dialog = r.dialog.block.firstElementChild;	
+				var styles = p[0];
+				for(style in styles){
+					dialog.style[style] = styles[style];
+				}
+			},
+			title : function(r,p){
+				var title = document.createElement("h5");
+				var span  = document.createElement("span");
+				title.className = "panel-heading"
+				span.innerHTML = p[0];
+				title.appendChild(span);
+				r.dialog.block.firstElementChild.appendChild(title);
+			},
+			buttons : function(r,p){
+				var item  = document.createElement("button");
+				var icon  = document.createElement("img");
+				var label = document.createElement("div");
+				var items = p[0];
+				for(_item in items){
+					(function(){
+					var i = items[_item]
+					item  = item.cloneNode();
+					icon  = icon.cloneNode();
+					label = label.cloneNode();
+					icon.src = i[0];
+					label.innerHTML = i[1];
+					item.addEventListener("click",function(){
+						i[2](r);
+					});
+					item.appendChild(icon);
+					item.appendChild(label);
+					r.dialog.block.firstElementChild.appendChild(item);
+					})();
+				}
+				
+			},
+			inputs : function(r,p){
+				var inputs = p[0];
+				for(input in inputs){
+					var wrapper = document.createElement("div");
+					var element = document.createElement(inputs[input][0]);
+					var attributes = inputs[input][1];
+					wrapper.className = "input";
+					for(attribute in attributes){
+						element.setAttribute(attribute,attributes[attribute]);
+					}
+					wrapper.appendChild(element)
+					r.dialog.block.firstElementChild.appendChild(wrapper)
+				}
+			},
+			options : function(r,p){
+				var options = document.createElement("div");
+				options.className = "options";
+				var cancel = document.createElement("button");
+				var done   = document.createElement("button");
+				cancel.innerHTML = "Cancel";
+				done.innerHTML = "Done";
+				cancel.addEventListener("click",function(){r.dialog.hide(r);});
+				done.addEventListener("click",function(){p[0].done(r);r.dialog.hide(r);});
+				options.appendChild(cancel);
+				options.appendChild(done);
+				r.dialog.block.firstElementChild.appendChild(options)
+			}
+			
+		}
+		
+	}
+		
+	
+	
+	
+	
+
+}; // end writable
+
+
+
+
+
+
+//invoke script
+window.addEventListener('load',function(){writable.init(writable);},false);
