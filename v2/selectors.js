@@ -58,7 +58,7 @@ const selectors = {
 				this.active = false;
 				this.block.style.display = "none";
 				var toggle = this.block.firstElementChild.firstElementChild;
-				toggle.style.backgroundImage = "url(https://rumcore.github.io/writable.ai/v2/icons/svg/black-selector-add.svg)";
+				toggle.style.backgroundImage = "url(https://rumcore.github.io/writable.ai/v2/icons/svg/black-selector-open.svg)";
 				toggle.nextElementSibling.style.display = 'none';
 				toggle.dataset.state = '0';
 				
