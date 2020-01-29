@@ -535,7 +535,8 @@ const writable = {
 					}
 				},
 				set : {
-					uploader : function(r,p){
+					uploader : function(r,p,c){
+						console.log(p)
 						var collection = p[0];
 						var container = collection.firstElementChild;
 						container.addEventListener("click",function(p){
@@ -556,7 +557,7 @@ const writable = {
 						});
 						container.addEventListener("dragover",function(p){},false);
 						container.addEventListener("drop",function(p){
-						r.api.set.image.upload(r,function(p){
+						r.api.set.image.upload(function(p){
 							var src    = p[0];
 							var srcset = p[1];
 							var e = document.createElement('div');
