@@ -673,7 +673,7 @@ const writable = {
 			r.dialog.block.style.display = "none";
 			r.dialog.block.firstElementChild.innerHTML = "";
 		},
-		block : '<div id="writable-dialog" class="dialog"><div class="panel"></div><div class="av"></div></div>',
+		block : '<div id="writable-dialog" class="writable-dialog"><div class="panel"></div><div class="av"></div></div>',
 		items : {
 			styles : function(r,p){
 				var dialog = r.dialog.block.firstElementChild;	
