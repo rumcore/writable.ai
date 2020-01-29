@@ -43,7 +43,6 @@ const selectors = {
 	
 		},
 		show : function(r,p){
-			console.log(p[0])
 			this.target = p[0];
 			var left = this.target.offsetLeft-72;
 			var top  = this.target.offsetTop-2;
@@ -104,9 +103,7 @@ const selectors = {
 			var ref    = r.collections[p[0]];
 			var markup = ref.markup.styles[p[1]];
 			var action = p[2];
-			console.log(target)
 			var collection = r.writable.set.collection(r,[ref,markup]);
-			console.log(collection)
 			r.writable.set.target.splice(r.writable,[collection,target]);
 			typeof action==='function'?action([collection]):null; 
 			r.writable.set.caret.start(r.writable,[collection]);

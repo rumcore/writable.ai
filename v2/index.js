@@ -43,6 +43,8 @@ const writable = {
 		s_modifiers.addEventListener("load",function(){
 			r.modifiers = modifiers;
 			r.modifiers.init(r.modifiers,[r,r.dialog,r.collections]);
+			
+			r.element.innerHTML += "<div id='writable-end'></div>";
 		});		
 
 		//s_blocks.src    = r.host+"blocks.js";
@@ -127,9 +129,7 @@ const writable = {
 			},
 			prev : function(r,p){
 				var target = p[0];
-				while(!target.previousElementSibling){
-					target = target.parentElement;
-				}
+				while(!target.previousElementSibling){target = target.parentElement;}
 				target = target.previousElementSibling;
 				if(p[1]===0){
 					r.set.caret.start(r,[target]);
@@ -139,14 +139,24 @@ const writable = {
 			},
 			next : function(r,p){
 				var target = p[0];
-				while(!target.nextElementSibling){
-					target = target.parentElement;
-				}
+				while(!target.nextElementSibling){target = target.parentElement;}
 				target = target.nextElementSibling;
-				if(p[1]===0){
-					r.set.caret.start(r,[target]);
+				
+				if(target && (target.id==="writable-end")){
+					r.event.preventDefault();
+					console.log(target.id)
+					if(r.collection[1][0].className !== 'paragraph'){
+						console.log("in")
+						var col = r.set.target.insert(r,['paragraph','default']);
+						target.parentElement.insertBefore(col,target);
+						r.set.caret.start(r,[col])
+					}
 				}else{
-					r.set.caret.end(r,[target])
+					if(p[1]===0){
+						r.set.caret.start(r,[target]);
+					}else{
+						r.set.caret.end(r,[target])
+					}
 				}
 			}
 		},
@@ -173,8 +183,6 @@ const writable = {
 							element.innerHTML = "<BR>";
 						}else if(bl === 0 && !item.previousElementSibling){
 							r.event.preventDefault();
-							console.log(stack[0].previousElementSibling);
-							console.log(typeof stack[0].previousElementSibling.contentEditable !== "false");
 							if(stack[0].previousElementSibling&&stack[0].previousElementSibling.contentEditable !== "false"){
 								r.set.caret.prev(r,[block,1])
 								block.parentElement.removeChild(block);
@@ -232,7 +240,6 @@ const writable = {
 						var block      = p[0][2][0];
 						var item       = p[0][2][1];
 						var element    = p[0][2][2];
-						console.log(p[0])
 						var position = window.getSelection().focusOffset;
 						var trigger  = r.get.property(r,[p[0],["triggers","13"]]);
 						trigger = trigger ? trigger.toString() : "0";
@@ -243,7 +250,10 @@ const writable = {
 								r.set.caret.next(r,[stack[stack.length-1],0]);
 								break;
 							case '1':
-								console.log("if empty, consider either clone or jumping to next")
+								if(r.get.target.text([block]).length===0||r.get.target.text([item]).length===0){
+									r.event.preventDefault();
+									r.set.caret.next(r,[block,0]);
+								}
 							break;
 							case '2':
 								r.event.preventDefault();
@@ -317,17 +327,25 @@ const writable = {
 			splice : function(r,p){
 				var collection = r.collection[1][0];
 				var container  = r.collection[1][0];
+				var item      = r.collection[1][0];
 				var block      = r.collection[2][0];
 				
-				var pre = collection.cloneNode(true);
-				pre.firstElementChild.innerHTML = "";
 				
-				while(block.previousElementSibling){
-					pre.firstElementChild.appendChild(block.previousElementSibling)
-				}
-				collection.parentElement.insertBefore(p[0],collection);
-				collection.parentElement.insertBefore(pre,p[0]);
-				p[1].parentElement.removeChild(p[1]);
+					var pre = collection.cloneNode(true);
+					pre.firstElementChild.innerHTML = "";
+
+					while(block.previousElementSibling){pre.firstElementChild.appendChild(block.previousElementSibling)}
+				
+					collection.parentElement.insertBefore(p[0],collection);
+					collection.parentElement.insertBefore(pre,p[0]);
+					p[1].parentElement.removeChild(p[1]);
+					
+					if(collection.nextElementSibling.id === "writable-end"){
+						collection.parentElement.removeChild(collection);
+					}
+					r.set.caret.start(r,[p[0]])
+				
+				
 			},
 			element : function(r,p){
 				
@@ -367,7 +385,14 @@ const writable = {
 					}
 					r.set.caret.start(r,[block])
 				}
-			}
+			},
+			insert : function(r,p,c){
+				var ref    = r.collections[p[0]];
+				var markup = ref.markup.styles[p[1]];
+				var collection = r.set.collection(r,[ref,markup]);
+				r.set.caret.start(r,[collection]);
+				return collection
+			},
 		},		
 		collection : function(r,p){
 			var ref = p[0];
@@ -470,7 +495,7 @@ const writable = {
 				containers  : {'container':'<div class="container"></div>'},
 				blocks      : {'h3':'<h3><span>Sample Heading</span></h3>'}
 			},
-			selector : {'div':true}
+			selector : {'div':false}
 		},
 		quote : {
 			markup : {
