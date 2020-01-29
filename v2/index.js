@@ -3,6 +3,8 @@ const writable = {
 	data : {},
 	
 	init : function(r){ 
+		r.host = "https://rumcore.github.io/writable.ai/v2/";
+		
 		r.element = document.getElementById('writable');
 		r.body    = document.body;
 		//r.element.innerHTML =  r.element.innerHTML.replace(/\s+/g, '');
@@ -43,9 +45,9 @@ const writable = {
 			r.modifiers.init(r.modifiers,[r,r.dialog,r.collections]);
 		});		
 
-		s_blocks.src    = "blocks.js";
-		s_selectors.src = "selectors.js";
-		s_modifiers.src = "modifiers.js";
+		s_blocks.src    = r.host+"blocks.js";
+		s_selectors.src = r.host+"selectors.js";
+		s_modifiers.src = r.host+"modifiers.js";
 		document.getElementsByTagName("head")[0].appendChild(s_blocks);
 		
 		for(collection in r.collections){
