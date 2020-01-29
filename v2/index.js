@@ -26,15 +26,15 @@ const writable = {
 		
 		r.element.setAttribute('contentEditable','true');
 		
-		var s_blocks     = document.createElement('script');
+		//var s_blocks     = document.createElement('script');
 		var s_selectors  = document.createElement('script');
 		var s_modifiers  = document.createElement('script');
-		s_blocks.type    = "text/javascript";
+		//s_blocks.type    = "text/javascript";
 		s_selectors.type = "text/javascript";
 		s_modifiers.type = "text/javascript";
-		s_blocks.addEventListener("load",function(){
+		//s_blocks.addEventListener("load",function(){
 			document.getElementsByTagName("head")[0].appendChild(s_selectors);
-		});
+		//});
 		s_selectors.addEventListener("load",function(){
 			r.selectors = selectors;
 			r.selectors.init(r.selectors,[r,r.dialog,r.collections]);
@@ -45,7 +45,7 @@ const writable = {
 			r.modifiers.init(r.modifiers,[r,r.dialog,r.collections]);
 		});		
 
-		s_blocks.src    = r.host+"blocks.js";
+		//s_blocks.src    = r.host+"blocks.js";
 		s_selectors.src = r.host+"selectors.js";
 		s_modifiers.src = r.host+"modifiers.js";
 		document.getElementsByTagName("head")[0].appendChild(s_blocks);
