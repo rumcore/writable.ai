@@ -165,32 +165,20 @@ const selectors = {
 							var params = {};
 							params.styles = {padding:"0px",width:"360px"};
 							params.buttons = [
-							["http://localhost/assets/components/writable_4/icons/check.svg","Check",function(){r.insert(r,['list','icon',function(p){
-								r.collections['list'].actions.set.icon([p[0],'http://localhost/assets/components/writable_4/icons/check-dark.svg'])}]);
+							["https://rumcore.github.io/writable.ai/v2/icons/svg/white-check.svg","Check",function(){r.insert(r,['list','icon',function(p){
+								r.collections['list'].actions.set.icon([p[0],'https://rumcore.github.io/writable.ai/v2/icons/svg/dark-check.svg'])}]);
 																
 							}],
-							["http://localhost/assets/components/writable_4/icons/cross.svg","Cross",function(){r.insert(r,['list','icon',function(p){
-								r.collections['list'].actions.set.icon([p[0],'http://localhost/assets/components/writable_4/icons/cross-dark.svg'])}]);
+							["https://rumcore.github.io/writable.ai/v2/icons/svg/white-cross.svg","Cross",function(){r.insert(r,['list','icon',function(p){
+								r.collections['list'].actions.set.icon([p[0],'https://rumcore.github.io/writable.ai/v2/icons/svg/dark-cross.svg'])}]);
 																
 							}],	
 							
-							["http://localhost/assets/components/writable_4/icons/check.svg","Check",function(){r.insert(r,['list','icon',function(p){
-								r.collections['list'].actions.set.icon([p[0],'http://localhost/assets/components/writable_4/icons/check-dark.svg'])}]);
+							["https://rumcore.github.io/writable.ai/v2/icons/svg/white-check.svg","Check",function(){r.insert(r,['list','icon',function(p){
+								r.collections['list'].actions.set.icon([p[0],'https://rumcore.github.io/writable.ai/v2/icons/svg/dark-check.svg'])}]);
 																
 							}],
-							["http://localhost/assets/components/writable_4/icons/check.svg","Check",function(){r.insert(r,['list','icon',function(p){
-								r.collections['list'].actions.set.icon([p[0],'http://localhost/assets/components/writable_4/icons/check-dark.svg'])}]);
-																
-							}],
-							["http://localhost/assets/components/writable_4/icons/check.svg","Check",function(){r.insert(r,['list','icon',function(p){
-								r.collections['list'].actions.set.icon([p[0],'http://localhost/assets/components/writable_4/icons/check-dark.svg'])}]);
-																
-							}],	
 							
-							["http://localhost/assets/components/writable_4/icons/check.svg","Check",function(){r.insert(r,['list','icon',function(p){
-								r.collections['list'].actions.set.icon([p[0],'http://localhost/assets/components/writable_4/icons/check-dark.svg'])}]);
-																
-							}],	
 								
 							]
 							
