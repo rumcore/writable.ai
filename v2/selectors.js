@@ -125,11 +125,11 @@ const selectors = {
 					var params = {};
 					params.styles = {padding:"0px",width:"360px"};
 					params.buttons = [
-						["https://rumcore.github.io/writable.ai/assets/icons/svg/white/white-selector-heading.svg","Heading",function(){
+						["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-heading.svg","Heading",function(){
 							r.insert(r,['heading','default']);
-						}],["https://rumcore.github.io/writable.ai/assets/icons/svg/white/white-selector-quote.svg","Quote",function(){
+						}],["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-quote.svg","Quote",function(){
 							r.insert(r,['quote','default']);
-						}],["https://rumcore.github.io/writable.ai/assets/icons/svg/white/white-selector-tip.svg","Note",function(){
+						}],["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-tip.svg","Note",function(){
 							r.insert(r,['note','default']);
 						}]
 					]
