@@ -161,7 +161,6 @@ const writable = {
 						var block      = p[0][2][0];
 						var item       = p[0][2][1];
 						var element    = p[0][2][2];
-						
 						var position = window.getSelection().focusOffset;
 						var trigger  = r.get.property(r,[p[0],["triggers","8"]]);
 						trigger = trigger ? trigger.toString() : "0";
@@ -169,15 +168,20 @@ const writable = {
 						var el = r.get.target.text([element]).length;
 						var bl = r.get.target.text([block]).length;
 						var cl = r.get.target.text([stack[0]]).length;	
-						if(el===1 && item.children.length === 1){
+						if(el===1 && (item.children.length === 1||block.children.length === 1)){
 							r.event.preventDefault();
 							element.innerHTML = "<BR>";
 						}else if(bl === 0 && !item.previousElementSibling){
 							r.event.preventDefault();
-							r.set.caret.prev(r,[block,1])
-							block.parentElement.removeChild(block);
-							// **check for empty container
-							if(cl === 0){stack[0].parentElement.removeChild(stack[0])}
+							console.log(stack[0].previousElementSibling);
+							console.log(typeof stack[0].previousElementSibling.contentEditable !== "false");
+							if(stack[0].previousElementSibling&&stack[0].previousElementSibling.contentEditable !== "false"){
+								r.set.caret.prev(r,[block,1])
+								block.parentElement.removeChild(block);
+								// **check for empty container
+								if(cl === 0){stack[0].parentElement.removeChild(stack[0])}
+							}
+							
 						}else if(position===0){
 							switch(trigger){
 								case '0':
@@ -206,7 +210,6 @@ const writable = {
 								case '2':
 								break;	
 								case '3':
-									console.log(item)
 									if(item.children.length === 1){
 										r.event.preventDefault();
 										r.set.caret.prev(r,[element,1])
