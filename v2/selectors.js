@@ -58,7 +58,7 @@ const selectors = {
 				this.active = false;
 				this.block.style.display = "none";
 				var toggle = this.block.firstElementChild.firstElementChild;
-				toggle.style.backgroundImage = "url(https://rumcore.github.io/writable.ai/v2/icons/svg/selector-add.svg)";
+				toggle.style.backgroundImage = "url(https://rumcore.github.io/writable.ai/v2/icons/svg/black-selector-add.svg)";
 				toggle.nextElementSibling.style.display = 'none';
 				toggle.dataset.state = '0';
 				
@@ -199,7 +199,7 @@ const selectors = {
 						
 						}],
 						
-						["icons/resources.svg","Resources",function(){
+						["https://rumcore.github.io/writable.ai/v2/icons/svg/white-selector-resources.svg","Resources",function(){
 							r.insert(r,['expandable','resources']);
 						}],
 						
@@ -216,7 +216,7 @@ const selectors = {
 				}
 			],
 			"selector-table" : [
-				"icons/table.svg",
+				"https://rumcore.github.io/writable.ai/v2/icons/svg/black-selector-table.svg",
 				-1,
 				-1,
 				function(r){
