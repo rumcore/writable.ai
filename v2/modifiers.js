@@ -170,7 +170,6 @@ const modifiers = {
 				var selection = r.selection(r);
 				var items     = selection.children;
 				var min = 0;
-				console.log(selection)
 				if(items){
 					if(selection.start > 0){
 						r.text.split.start(r,[items[0],selection.start]);
@@ -187,7 +186,6 @@ const modifiers = {
 						items[i].parentElement.replaceChild(element,items[i]);
 					}
 					if(p[1]){
-						console.log(p[1])
 						element.innerText = p[1];
 					}
 					r.writable.set.caret.end(r.writable,[element])
@@ -329,7 +327,6 @@ const modifiers = {
 							params.inputs = [["textarea",{id:'mod-url',rows:4}]]
 							params.options = {}
 							params.options.done = function(r){
-								console.log("done")
 								var element  = document.createElement("a");
 								element.href = document.getElementById('mod-url').value;
 								element.target = "_blank"
@@ -344,7 +341,6 @@ const modifiers = {
 						-1,
 						-1,
 						function(r){
-							console.log("do some mark shit..")
 							var element = document.createElement("mark");
 							r.text.modify(r,[element]);
 						}
@@ -373,7 +369,6 @@ const modifiers = {
 						function(r){
 							//show dialog
 							var href   = r.writable.collection[2][2].getAttribute("href");
-							console.log(href)
 							var params = {title:'Add URL'};
 							params.styles = {padding:"24px",width:"360px"}
 							params.inputs = [["textarea",{"id":'mod-url',"rows":4},href]]
