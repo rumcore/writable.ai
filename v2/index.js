@@ -90,12 +90,15 @@ const writable = {
 					if(r.event.keyCode&&r.set.target.trigger[r.event.keyCode]){
 						r.set.target.trigger[r.event.keyCode](r,[collection])
 					}
-					if(p[1]===6){
-						// handler paste
-						r.modifiers.text.paste(r.modifiers)
-					}
+					
 					r.selectors.toggle(r,[collection]);
-					r.modifiers.toggle(r.modifiers,[collection]);
+					if(range && range.commonAncestorContainer && range.commonAncestorContainer.id !== "writable"){
+						if(p[1]===6){r.modifiers.text.paste(r.modifiers)}else{
+							r.modifiers.toggle(r.modifiers,[collection]);
+						}
+						
+					}
+					
 				}
 			}	
 		},
@@ -150,9 +153,7 @@ const writable = {
 				
 				if(target && (target.id==="writable-end")){
 					r.event.preventDefault();
-					console.log(target.id)
 					if(r.collection[1][0].className !== 'paragraph'){
-						console.log("in")
 						var col = r.set.target.insert(r,['paragraph','default']);
 						target.parentElement.insertBefore(col,target);
 						r.set.caret.start(r,[col])
@@ -169,7 +170,6 @@ const writable = {
 		text : {
 			paste : function(r){
 				r.event.preventDefault();
-				console.log("paste")
 				var text = (r.event.originalEvent || r.event).clipboardData.getData('text/plain');
 				text = text.replace(/(?:\\[rn]|[\r\n]+)+/g, "");
 				r.text.replace(r,[text])
@@ -294,7 +294,6 @@ const writable = {
 								if(el>0){
 									r.set.target.element(r,[collection,block,element]);
 								}else if(el===0 && next){
-									console.log("remove")
 									r.set.caret.next(r,[element,1]);
 									item.removeChild(element)
 								}else{
@@ -552,7 +551,6 @@ const writable = {
 						var collection = p[0];
 						var container = collection.firstElementChild;
 						container.addEventListener("click",function(p){
-							console.log("clicled")
 							var params    = {title:'Add Image URL'};
 							params.styles = {padding:"24px",width:"360px"}
 							params.inputs = [["textarea",{id:'img-url',rows:4}]]
@@ -674,11 +672,7 @@ const writable = {
 			block.addEventListener("click",function(e){
 				if(e.target.id === 'writable-dialog'){r.dialog.hide(r);}
 			});
-			block.firstElementChild.addEventListener("mousedown",function(e){
-				console.log(this)
-				//e.stopPropagation()
-				//e.preventDefault();
-			});
+		
 			document.body.appendChild(block);
 			this.block = block;
 		},
@@ -748,7 +742,6 @@ const writable = {
 					var attributes    = inputs[input][1];
 					wrapper.className = "input";
 					for(attribute in attributes){
-						console.log(attribute)
 						element.setAttribute(attribute,attributes[attribute]);
 					}
 					element.value = inputs[input][2]?inputs[input][2]:"";

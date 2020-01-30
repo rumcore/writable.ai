@@ -186,6 +186,10 @@ const modifiers = {
 						element.innerHTML = items[i].innerHTML;
 						items[i].parentElement.replaceChild(element,items[i]);
 					}
+					if(p[1]){
+						console.log(p[1])
+						element.innerText = p[1];
+					}
 					r.writable.set.caret.end(r.writable,[element])
 					
 				}
@@ -239,7 +243,6 @@ const modifiers = {
 					var div  = document.createElement("div");
 					div.innerHTML = text;
 					var position = window.getSelection().focusOffset;
-					console.log(position)
 					
 					if(position === 0 && r.focused[0][0].innerText.length < 2){
 						r.focused[0][0].innerHTML = text;
@@ -262,10 +265,18 @@ const modifiers = {
 				r.writable.event.preventDefault();
 				var text = (r.writable.event.originalEvent || r.writable.event).clipboardData.getData('text/plain');
 				text = text.replace(/(?:\\[rn]|[\r\n]+)+/g, "");
+				
+				r.writable.collection[2][2].tagName;
+				var element = document.createElement(r.writable.collection[2][2].tagName);
+				r.text.modify(r,[element,text]);
+				
+				/*
+				
+				
 				var node = r.writable.collection[2][2].cloneNode()
       			node.innerHTML = text;
       			r.writable.range.insertNode(node);
-				
+				*/
 			}
 		},	
 		selection : function(r,p){
