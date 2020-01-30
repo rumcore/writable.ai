@@ -330,7 +330,6 @@ const writable = {
 				var item      = r.collection[1][0];
 				var block      = r.collection[2][0];
 				
-				
 					var pre = collection.cloneNode(true);
 					pre.firstElementChild.innerHTML = "";
 
@@ -340,7 +339,7 @@ const writable = {
 					collection.parentElement.insertBefore(pre,p[0]);
 					p[1].parentElement.removeChild(p[1]);
 					
-					if(collection.nextElementSibling.id === "writable-end"){
+					if(collection.nextElementSibling.id === "writable-end"&&r.get.target.text([collection]).length===0){
 						collection.parentElement.removeChild(collection);
 					}
 					r.set.caret.start(r,[p[0]])
