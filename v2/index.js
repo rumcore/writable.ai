@@ -49,8 +49,8 @@ const writable = {
 		});		
 
 		//s_blocks.src    = r.host+"blocks.js";
-		s_selectors.src = "selectors.js"//r.host+"selectors.js";
-		s_modifiers.src = "modifiers.js"//r.host+"modifiers.js";
+		s_selectors.src = r.host+"selectors.js";
+		s_modifiers.src = r.host+"modifiers.js";
 		//document.getElementsByTagName("head")[0].appendChild(s_blocks);
 		
 		for(_collection in r.collections){
