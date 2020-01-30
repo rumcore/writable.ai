@@ -73,14 +73,17 @@ const modifiers = {
 				}
 				
 				if(show){
+					
 					this.target = p[1][0];
 					this.active = p[0][0];
+					r.block.style.display = "block";
+					document.getElementById(this.active).style.display = "block";
 					var left = (box.width/2)-(r.block.offsetWidth/2)+box.left;
 					var top  = ((box.y-box.height)-r.block.offsetHeight)+document.documentElement.scrollTop; 
-					r.block.style.display = "block";
+					
 					r.block.style.left = left+"px";
 					r.block.style.top  = top+"px";
-					document.getElementById(this.active).style.display = "block";	
+						
 				}else{this.hide(r)}
 			}
 		},
@@ -95,14 +98,15 @@ const modifiers = {
 		toggle : function(r,p){
 			var collection = p[0];
 			var element   = collection[0][0];
-			if(r.writable.trigger === 0 || r.writable.trigger === 2){
+			//if(r.writable.trigger === 0 || r.writable.trigger === 2){
 				var modifier = r.writable.get.property(r,[collection,["modifier"]]);
+				console.log(modifier)
 				if(modifier){
 					this.show(r,[modifier,collection[2]])
 				}else{
 					this.hide(r)
 				}
-			}
+			//}this.hide(r)
 		},
 	
 		block : '<div id="modifier" class="modifier"></div>',
