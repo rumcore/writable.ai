@@ -98,7 +98,7 @@ const modifiers = {
 		toggle : function(r,p){
 			var collection = p[0];
 			var element   = collection[0][0];
-			//if(r.writable.trigger === 0 || r.writable.trigger === 2){
+			if(r.writable.trigger === 0 || r.writable.trigger === 2){
 				var modifier = r.writable.get.property(r,[collection,["modifier"]]);
 				console.log(modifier)
 				if(modifier){
@@ -106,7 +106,7 @@ const modifiers = {
 				}else{
 					this.hide(r)
 				}
-			//}this.hide(r)
+			}
 		},
 	
 		block : '<div id="modifier" class="modifier"></div>',
