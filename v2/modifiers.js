@@ -82,10 +82,6 @@ const modifiers = {
 					r.block.style.top  = top+"px";
 					document.getElementById(this.active).style.display = "block";	
 				}else{this.hide(r)}
-
-				
-
-				
 			}
 		},
 		hide : function(r){
@@ -94,15 +90,12 @@ const modifiers = {
 				document.getElementById(this.active).style.display = "none";
 				this.active = false;
 			}
-			
-
 		},
 		
 		toggle : function(r,p){
 			var collection = p[0];
 			var element   = collection[0][0];
 			if(r.writable.trigger === 0 || r.writable.trigger === 2){
-				
 				var modifier = r.writable.get.property(r,[collection,["modifier"]]);
 				if(modifier){
 					this.show(r,[modifier,collection[2]])
@@ -177,6 +170,7 @@ const modifiers = {
 				var selection = r.selection(r);
 				var items     = selection.children;
 				var min = 0;
+				console.log(selection)
 				if(items){
 					if(selection.start > 0){
 						r.text.split.start(r,[items[0],selection.start]);
@@ -244,13 +238,17 @@ const modifiers = {
 				}else{
 					var div  = document.createElement("div");
 					div.innerHTML = text;
-					if(r.caret.position === 0 && r.focused[0][0].innerText.length < 2){
+					var position = window.getSelection().focusOffset;
+					console.log(position)
+					
+					if(position === 0 && r.focused[0][0].innerText.length < 2){
 						r.focused[0][0].innerHTML = text;
 						r.text.end(r,[r.focused[0][0]])
 					}else{
-						r.f.innerHTML = r.f.innerText.substring(0,r.caret.position) 
-						+text+ r.f.innerText.substring(r.caret.position,r.f.innerText.length);
-						r.text.position(r,[r.focused[0][0],r.caret.position])
+						r.f = r.writable.collections[2][2]
+						r.f.innerHTML = r.f.innerText.substring(0,position) 
+						+text+ r.f.innerText.substring(position,r.f.innerText.length);
+						r.text.position(r,[r.focused[0][0],position])
 					}
 					
 					
@@ -260,17 +258,20 @@ const modifiers = {
 				return items;
 			},
 			paste : function(r){
-				r.e.preventDefault();
-				var text = (r.e.originalEvent || r.e).clipboardData.getData('text/plain');
-				text     = text.replace(/(?:\\[rn]|[\r\n]+)+/g, "");
-				r.text.replace(r,[text])
+				
+				r.writable.event.preventDefault();
+				var text = (r.writable.event.originalEvent || r.writable.event).clipboardData.getData('text/plain');
+				text = text.replace(/(?:\\[rn]|[\r\n]+)+/g, "");
+				var node = r.writable.collection[2][2].cloneNode()
+      			node.innerHTML = text;
+      			r.writable.range.insertNode(node);
 				
 			}
 		},	
 		selection : function(r,p){
 			var selection = window.getSelection();
-    		var range = selection.getRangeAt(0);
-			//var range  = r.writable.range;
+    		//var range     = selection.getRangeAt(0);
+			var range  = r.writable.range;
 			var collection = {};
 			var se = range.startContainer.nodeType === 1 ? range.startContainer : range.startContainer.parentElement;
 			var ee = range.endContainer.nodeType === 1 ? range.endContainer : range.endContainer.parentElement;
@@ -317,9 +318,10 @@ const modifiers = {
 							params.inputs = [["textarea",{id:'mod-url',rows:4}]]
 							params.options = {}
 							params.options.done = function(r){
+								console.log("done")
 								var element  = document.createElement("a");
 								element.href = document.getElementById('mod-url').value;
-								r.selection = r.dialog.selection;
+								element.target = "_blank"
 								r.text.modify(r,[element]);
 							}
 							r.dialog.show(r,[params]);
@@ -349,37 +351,75 @@ const modifiers = {
 						1,
 						-1,
 						function(r){
+							var src = r.writable.collection[2][2].getAttribute("href");
+							window.open(src.indexOf("http")>0?src:"http://"+src);
+						}
+					],
+					edit : [
+						"https://rumcore.github.io/writable.ai/assets/icons/svg/white/modifier-link.svg",
+						-1,
+						-1,
+						function(r){
 							//show dialog
+							var href   = r.writable.collection[2][2].getAttribute("href");
+							console.log(href)
 							var params = {title:'Add URL'};
 							params.styles = {padding:"24px",width:"360px"}
-							params.inputs = [["textarea",{id:'mod-url',rows:4}]]
+							params.inputs = [["textarea",{"id":'mod-url',"rows":4},href]]
 							params.options = {}
 							params.options.done = function(r){
-								var element  = document.createElement("a");
-								element.href = document.getElementById('mod-url').value;
-								r.selection = r.dialog.selection;
-								console.log(r.text.modify)
-								r.text.modify(r,[element]);
+								var col = r.writable.collection[1][0];
+								var ele = r.writable.collection[2][2];
+								col = r.writable.collections[col.className];
+								if(col){
+									col.modifier["a"] = ["modifier-link",1]
+								}
+								
+								ele.href = document.getElementById('mod-url').value;
 							}
 							r.dialog.show(r,[params]);
 							
 						}
 					],
-					mark : [
-						"https://rumcore.github.io/writable.ai/assets/icons/svg/white/modifier-mark.svg",
-						-1,
-						-1,
-						function(r){
-							console.log("do some mark shit..")
-							var element = document.createElement("mark");
-							r.text.modify(r,[element]);
-						}
-					],
 					
 				},
 				
+				
 			},
 		
+			"modifier-resource" : {
+				
+				items : {
+					
+					link : [
+						"https://rumcore.github.io/writable.ai/assets/icons/svg/white/modifier-link.svg",
+						-1,
+						-1,
+						function(r){
+							//show dialog
+							var params = {title:'Add URL'};
+							params.styles  = {padding:"24px",width:"360px"}
+							params.inputs  = [["textarea",{id:'mod-url',rows:4}]]
+							params.options = {}
+							params.options.done = function(r){
+								var col = r.writable.collection[1][0];
+								var ele = r.writable.collection[2][2];
+								col = r.writable.collections[col.className];
+								if(col){
+									col.modifier["a"] = ["modifier-link",1]
+								}
+								
+								ele.href = document.getElementById('mod-url').value;
+							
+							}
+							r.dialog.show(r,[params]);
+							
+						}
+					],
+					
+					
+				},
+			},
 			
 		}
 		

@@ -7,9 +7,9 @@
 	<title>Writable</title>
 	
 	<!--fonts-->
-	<link href="https://fonts.googleapis.com/css?family=Work+Sans:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Lato:100,200,300,400,500,600,700,800,900" rel="stylesheet">
 	
-	<!--scripts 	-->
+	 <!--scripts-->	
 	<link type="text/css" rel="stylesheet" href="index.css">
 	<script type="text/javascript" src="index.js"></script>
 	<script type="text/javascript">
@@ -26,7 +26,17 @@
 	
 	<div id="writable" class="writable">
 		
+		<div class="heading" contenteditable="false">
+			<div class="container">
+				<h1><span>New Content</span></h1>
+			</div>
+		</div>
 		
+		<div class="heading" >
+			<div class="container">
+				<h1><span>New Content</span></h1>
+			</div>
+		</div>
 		
 		<div class="paragraph">
 			<div class="container">
@@ -134,7 +144,7 @@
 		<div class="expandable" >
 			<div class="container">
 				<div class="resource">
-					<div class="resource-toggle show">2018</div>
+					<div class="resource-toggle show" onClick="blocks.expandable.set.toggle(blocks,[this])">2018</div>
 					<div class="resource-list">
 						<a class="resource-list-item" href="">Item 1</a>
 						<a class="resource-list-item" href="">Item 2</a>
@@ -142,7 +152,7 @@
 					</div>
 				</div>
 				<div class="resource">
-					<div class="resource-toggle show">2019</div>
+					<div class="resource-toggle show" onClick="blocks.expandable.set.toggle(blocks,[this])">2019</div>
 					<div class="resource-list">
 						<a class="resource-list-item" href="">Bylaws 2334</a>
 						<a class="resource-list-item" href="">Bylaws 2334</a>

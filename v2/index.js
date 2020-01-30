@@ -18,6 +18,7 @@ const writable = {
 		r.element.addEventListener('mousedown',function(e){r.set.action(r,[e,1])});
 		r.element.addEventListener('keyup',function(e){r.set.action(r,[e,2])});
 		r.element.addEventListener('keydown',function(e){r.set.action(r,[e,3])});
+		r.element.addEventListener("paste",function(e){r.set.action(r,[e,6])});
 		window.addEventListener("dragover",function(e){e=e||event;e.preventDefault();});
 		window.addEventListener("drop",function(e){e=e||event;e.preventDefault();});
 		
@@ -48,8 +49,8 @@ const writable = {
 		});		
 
 		//s_blocks.src    = r.host+"blocks.js";
-		s_selectors.src = r.host+"selectors.js";
-		s_modifiers.src = r.host+"modifiers.js";
+		s_selectors.src = "selectors.js"//r.host+"selectors.js";
+		s_modifiers.src = "modifiers.js"//r.host+"modifiers.js";
 		//document.getElementsByTagName("head")[0].appendChild(s_blocks);
 		
 		for(_collection in r.collections){
@@ -75,11 +76,12 @@ const writable = {
 		action : function(r,p){
 			
 			var range  = window.getSelection().rangeCount > 0 ? window.getSelection().getRangeAt(0) : null;
-			
+			 
 			if(range && range.startContainer){
 				var target     = range.startContainer;
 				target = target.nodeType !== 1 ? target.parentElement : target;
 				var collection = r.get.target.collection(r,[target])
+				
 				if(collection){
 					r.event  	 = p[0];
 					r.trigger	 = p[1];
@@ -87,6 +89,10 @@ const writable = {
 					r.collection = collection;
 					if(r.event.keyCode&&r.set.target.trigger[r.event.keyCode]){
 						r.set.target.trigger[r.event.keyCode](r,[collection])
+					}
+					if(p[1]===6){
+						// handler paste
+						r.modifiers.text.paste(r.modifiers)
 					}
 					r.selectors.toggle(r,[collection]);
 					r.modifiers.toggle(r.modifiers,[collection]);
@@ -158,6 +164,16 @@ const writable = {
 						r.set.caret.end(r,[target])
 					}
 				}
+			}
+		},
+		text : {
+			paste : function(r){
+				r.event.preventDefault();
+				console.log("paste")
+				var text = (r.event.originalEvent || r.event).clipboardData.getData('text/plain');
+				text = text.replace(/(?:\\[rn]|[\r\n]+)+/g, "");
+				r.text.replace(r,[text])
+				
 			}
 		},
 		target : {
@@ -327,24 +343,22 @@ const writable = {
 			splice : function(r,p){
 				var collection = r.collection[1][0];
 				var container  = r.collection[1][0];
-				var item      = r.collection[1][0];
+				var item       = r.collection[1][0];
 				var block      = r.collection[2][0];
 				
-					var pre = collection.cloneNode(true);
-					pre.firstElementChild.innerHTML = "";
+				var pre = collection.cloneNode(true);
+				pre.firstElementChild.innerHTML = "";
 
-					while(block.previousElementSibling){pre.firstElementChild.appendChild(block.previousElementSibling)}
-				
-					collection.parentElement.insertBefore(p[0],collection);
-					collection.parentElement.insertBefore(pre,p[0]);
-					p[1].parentElement.removeChild(p[1]);
-					
-					if(collection.nextElementSibling.id === "writable-end"&&r.get.target.text([collection]).length===0){
-						collection.parentElement.removeChild(collection);
-					}
-					r.set.caret.start(r,[p[0]])
-				
-				
+				while(block.previousElementSibling){pre.firstElementChild.appendChild(block.previousElementSibling)}
+
+				collection.parentElement.insertBefore(p[0],collection);
+				collection.parentElement.insertBefore(pre,p[0]);
+				p[1].parentElement.removeChild(p[1]);
+
+				if(collection.nextElementSibling.id === "writable-end"&&r.get.target.text([collection]).length===0){
+					collection.parentElement.removeChild(collection);
+				}
+				r.set.caret.start(r,[p[0]]);
 			},
 			element : function(r,p){
 				
@@ -535,10 +549,10 @@ const writable = {
 				},
 				set : {
 					uploader : function(r,p,c){
-						console.log(p)
 						var collection = p[0];
 						var container = collection.firstElementChild;
 						container.addEventListener("click",function(p){
+							console.log("clicled")
 							var params    = {title:'Add Image URL'};
 							params.styles = {padding:"24px",width:"360px"}
 							params.inputs = [["textarea",{id:'img-url',rows:4}]]
@@ -622,7 +636,15 @@ const writable = {
 			},
 			triggers : {13:{"item-toggle":4,"resource-toggle":4,"resource-list-item":5},
 					   8:{"resource-list-item":3}},
-			selector : {"content":true}
+			selector : {"content":true},
+			modifier : {'a':["modifier-resource",1]},
+			actions : {
+				set : {
+					toggle : function(r,p){
+						console.log(p)
+					}
+				}
+			}
 		},
 		table : {
 			markup : {
@@ -650,7 +672,12 @@ const writable = {
 		init : function(r){
 			var block = r.get.html(r,[this.block]);
 			block.addEventListener("click",function(e){
-				if(e.target.id === 'dialog'){r.dialog.hide(r);}
+				if(e.target.id === 'writable-dialog'){r.dialog.hide(r);}
+			});
+			block.firstElementChild.addEventListener("mousedown",function(e){
+				console.log(this)
+				//e.stopPropagation()
+				//e.preventDefault();
 			});
 			document.body.appendChild(block);
 			this.block = block;
@@ -718,11 +745,13 @@ const writable = {
 				for(input in inputs){
 					var wrapper = document.createElement("div");
 					var element = document.createElement(inputs[input][0]);
-					var attributes = inputs[input][1];
+					var attributes    = inputs[input][1];
 					wrapper.className = "input";
 					for(attribute in attributes){
+						console.log(attribute)
 						element.setAttribute(attribute,attributes[attribute]);
 					}
+					element.value = inputs[input][2]?inputs[input][2]:"";
 					wrapper.appendChild(element)
 					r.dialog.block.firstElementChild.appendChild(wrapper)
 				}
