@@ -52,8 +52,8 @@ const writable = {
 		s_modifiers.src = r.host+"modifiers.js";
 		//document.getElementsByTagName("head")[0].appendChild(s_blocks);
 		
-		for(collection in r.collections){
-			var item = r.collections[collection];
+		for(_collection in r.collections){
+			var item = r.collections[_collection];
 			if(item.actions){
 				item.actions.init ? item.actions.init(r,[r.element,item]):null;
 			}
