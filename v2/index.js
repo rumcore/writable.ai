@@ -695,8 +695,8 @@ const writable = {
 								'container':'<div class="container"></div>'
 							  },
 				blocks : {
-					"item":'<div class="item"><div class="item-toggle show"><br></div><div class="item-content"><div class="paragraph"><div class="container"><p><span><br></span></p></div></div></div></div>',
-					"resource":'<div class="resource"><div class="resource-toggle show">Title</div><div class="resource-list"><a class="resource-list-item" href="">Sample 1</a></div></div>'
+					"item":'<div class="item"><div class="item-toggle show" onclick="blocks.set.toggle(blocks,[this])"><br></div><div class="item-content"><div class="paragraph"><div class="container"><p><span><br></span></p></div></div></div></div>',
+					"resource":'<div class="resource"><div class="resource-toggle show" onclick="blocks.set.toggle(blocks,[this])">Title</div><div class="resource-list"><a class="resource-list-item" href="">Sample 1</a></div></div>'
 				},
 				elements : {'resource-list-item':'<a class="resource-list-item" href=""><br></a>'} 
 			},
