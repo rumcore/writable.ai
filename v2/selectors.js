@@ -72,7 +72,6 @@ const selectors = {
 			if(r.trigger === 0 || r.trigger === 2){
 				var selector = r.get.property(r,[collection,["selector"]]);
 				var len = r.get.target.text([block]).length;
-			
 				if(selector && len===0){
 					this.show(r,[block])
 				}else{
@@ -152,12 +151,16 @@ const selectors = {
 					var params = {};
 					params.styles = {padding:"0px",width:"360px"};
 					params.buttons = [
-						["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-unordered.svg","Bulleted",function(){
+						["https://rumcore.github.io/writable.ai/v2/icons/svg/white-selector-bulleted.svg","Bulleted",function(){
 							r.insert(r,['list','default']);
 						}],
 						["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-unordered.svg","Ordered",function(){
 							r.insert(r,['list','numbered']);
-						}],["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-unordered.svg","Icons",function(){
+						}],
+						["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-ordered.svg","Stepped",function(){
+							r.insert(r,['list','numbered']);
+						}],		
+						["https://rumcore.github.io/writable.ai/v2/icons/svg/white-selector-icons.svg","Icons",function(){
 							
 							var params = {};
 							params.styles = {padding:"0px",width:"360px"};
@@ -184,16 +187,15 @@ const selectors = {
 						
 						}],
 						
-						["https://rumcore.github.io/writable.ai/v2/icons/svg/white-selector-resources.svg","Resources",function(){
-							r.insert(r,['expandable','resources']);
-						}],
-						
+
 						["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-expandable.svg","Expandables",function(){
 							r.insert(r,['expandable','default']);
 						}],
-						["https://rumcore.github.io/writable.ai/assets/icons/svg/white/selector-ordered.svg","Steps",function(){
-							r.insert(r,['list','numbered']);
-						}],
+						
+						["https://rumcore.github.io/writable.ai/v2/icons/svg/white-selector-resources.svg","Links",function(){
+							r.insert(r,['expandable','resources']);
+						}],						
+
 							
 					]
 					r.dialog.show(r,[params]);

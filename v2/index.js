@@ -7,6 +7,7 @@ const writable = {
 		
 		r.element = document.getElementById('writable');
 		r.body    = document.body;
+		
 		//r.element.innerHTML =  r.element.innerHTML.replace(/\s+/g, '');
 		r.element.innerHTML = r.element.innerHTML.split(/\>[\n\t\s]*\</g).join('><').split(/[\n\t]*/gm).join('')
 		
@@ -27,15 +28,14 @@ const writable = {
 		
 		r.element.setAttribute('contentEditable','true');
 		
-		//var s_blocks     = document.createElement('script');
+		//var s_icons      = document.createElement('script');
 		var s_selectors  = document.createElement('script');
 		var s_modifiers  = document.createElement('script');
 		//s_blocks.type    = "text/javascript";
 		s_selectors.type = "text/javascript";
 		s_modifiers.type = "text/javascript";
-		//s_blocks.addEventListener("load",function(){
-			document.getElementsByTagName("head")[0].appendChild(s_selectors);
-		//});
+		
+		document.getElementsByTagName("head")[0].appendChild(s_selectors);
 		s_selectors.addEventListener("load",function(){
 			r.selectors = selectors;
 			r.selectors.init(r.selectors,[r,r.dialog,r.collections]);
@@ -44,11 +44,10 @@ const writable = {
 		s_modifiers.addEventListener("load",function(){
 			r.modifiers = modifiers;
 			r.modifiers.init(r.modifiers,[r,r.dialog,r.collections]);
-			
 			r.element.innerHTML += "<div id='writable-end'></div>";
+			//document.getElementsByTagName("head")[0].appendChild(s_icons);
 		});		
-
-		//s_blocks.src    = r.host+"blocks.js";
+		//s_icons.src = "https://kit.fontawesome.com/970126508a.js";
 		s_selectors.src = r.host+"selectors.js";
 		s_modifiers.src = r.host+"modifiers.js";
 		//document.getElementsByTagName("head")[0].appendChild(s_blocks);
@@ -81,7 +80,6 @@ const writable = {
 				var target     = range.startContainer;
 				target = target.nodeType !== 1 ? target.parentElement : target;
 				var collection = r.get.target.collection(r,[target])
-				
 				if(collection){
 					r.event  	 = p[0];
 					r.trigger	 = p[1];
@@ -90,10 +88,11 @@ const writable = {
 					if(r.event.keyCode&&r.set.target.trigger[r.event.keyCode]){
 						r.set.target.trigger[r.event.keyCode](r,[collection])
 					}
-					
 					r.selectors.toggle(r,[collection]);
 					if(range && range.commonAncestorContainer && range.commonAncestorContainer.id !== "writable"){
-						if(p[1]===6){r.modifiers.text.paste(r.modifiers)}else{
+						if(p[1]===6){
+							r.modifiers.text.paste(r.modifiers)
+						}else{
 							r.modifiers.toggle(r.modifiers,[collection]);
 						}
 						
@@ -216,14 +215,16 @@ const writable = {
 									r.event.preventDefault();
 									var prev = block.previousElementSibling ? block.previousElementSibling:item.previousElementSibling;
 									if(prev){
-										var html  = prev.nextElementSibling.innerHTML;
+										var html  = prev.nextElementSibling;
 										var count = prev.children.length
 										var pl    = r.get.target.text([prev]).length;
 										if(pl===0){
-											prev.innerHTML = html;
+											prev.innerHTML = html.innerHTML;
 											r.set.caret.start(r,[prev]);
 										}else{
-											prev.innerHTML += html;
+											if(r.get.target.text([html]).length > 0){
+												prev.innerHTML += html.innerHTML;
+											}
 											r.set.caret.end(r,[prev.children[count-1]]);
 										}
 										prev.nextElementSibling.parentElement.removeChild(prev.nextElementSibling);
@@ -266,9 +267,39 @@ const writable = {
 								r.set.caret.next(r,[stack[stack.length-1],0]);
 								break;
 							case '1':
-								if(r.get.target.text([block]).length===0||r.get.target.text([item]).length===0){
+								if(r.get.target.text([item]).length===0){
 									r.event.preventDefault();
-									r.set.caret.next(r,[block,0]);
+									if(item.nextElementSibling){
+										r.set.caret.next(r,[item,0]);
+										item.parentElement.removeChild(item);
+									}else{
+										if(stack[0].className!=="paragraph"){
+											r.set.target.default(r);
+											if(r.get.target.text([stack[0]]).length===0){
+												item.parentElement.removeChild(item);
+											}else if(r.get.target.text([block]).length===0){
+												block.parentElement.removeChild(block);
+											}else{
+												item.parentElement.removeChild(item);
+											}
+										}else{
+											r.collection = r.get.target.collection(r,[stack[0].parentElement]);
+											if(stack[0].parentElement.className !== "writable" && !stack[0].nextElementSibling){
+												r.set.target.trigger[13](r,[r.collection]);
+												item.parentElement.removeChild(item);
+											}else{
+												r.set.caret.next(r,[item,0]);
+												if(r.get.target.text([stack[0]]).length===0){
+													item.parentElement.removeChild(item);
+												}else if(r.get.target.text([block]).length===0){
+													block.parentElement.removeChild(block);
+												}else{
+													item.parentElement.removeChild(item);
+												}
+											}
+											
+										}
+									}
 								}
 							break;
 							case '2':
@@ -277,15 +308,29 @@ const writable = {
 								break;
 							case '3':
 								r.event.preventDefault();
+								var bl = r.get.target.text([block]).length;
 								if(!item.nextElementSibling){
-									r.set.target.block(r,[stack,collection]);
+									if(bl === 0){
+										r.set.caret.next(r,[item,0]);
+										block.parentElement.removeChild(block);
+									}else{
+										r.set.target.block(r,[stack,collection]);
+									}
+									
 								}else{
 									r.set.caret.next(r,[item,0]);
 								}
 								break;
 							case '4':
 								r.event.preventDefault();
-								r.set.target.block(r,[stack,collection]);
+								if(r.get.target.text([block]).length!==0){
+									r.set.target.block(r,[stack,collection]);
+								}else{
+									r.set.caret.next(r,[block,0]);
+									block.parentElement.removeChild(block)
+								}
+								
+								console.log(block)
 								break;	
 							case '5':
 								r.event.preventDefault();
@@ -306,8 +351,21 @@ const writable = {
 						
 					}
 				},
-				49 : function(r,p){},
+				46 : function(r,p){r.event.preventDefault();},
 			},
+			
+			default : function(r,p){
+				var stack = r.collection[1];
+				var target = r.collection[2][2];
+				var col = r.set.target.insert(r,['paragraph','default']);
+				//target.parentElement.insertBefore(col,target);
+				var next = stack[0].nextElementSibling;
+				if(next && next.id !== "writable-end" ){
+					next.parentElement.insertBefore(col,next);
+					r.set.caret.start(r,[col]);
+				}
+			},
+			
 			node : function(p){
 				var html = p[0];
 				var node = document.createElement("div");
@@ -353,8 +411,8 @@ const writable = {
 				collection.parentElement.insertBefore(p[0],collection);
 				collection.parentElement.insertBefore(pre,p[0]);
 				p[1].parentElement.removeChild(p[1]);
-
-				if(collection.nextElementSibling.id === "writable-end"&&r.get.target.text([collection]).length===0){
+				console.log(collection)
+				if(collection.nextElementSibling &&collection.nextElementSibling.id === "writable-end"&&r.get.target.text([collection]).length===0){
 					collection.parentElement.removeChild(collection);
 				}
 				r.set.caret.start(r,[p[0]]);
@@ -402,7 +460,6 @@ const writable = {
 				var ref    = r.collections[p[0]];
 				var markup = ref.markup.styles[p[1]];
 				var collection = r.set.collection(r,[ref,markup]);
-				r.set.caret.start(r,[collection]);
 				return collection
 			},
 		},		
@@ -430,18 +487,25 @@ const writable = {
 			collection : function(r,p){
 				var target = p[0];
 				var items  = [],block;
-				var collection = r.collections[target.className];
-				
-				while(!collection && target){
-					items[items.length] = target;
-					collection = r.collections[target.className];
+				var collection;
+				var stack = [];
+				while(target && !collection){
+					stack[stack.length] = target;
+					collection = r.collections[target.className]
+					/*
+					if(r.collections[target.className] && !collection){
+						collection = r.collections[target.className];
+						stack = items.splice(0);
+						items = [];
+					}*/
 					target = target.parentElement;
 				}
-				items = items.reverse();
-				target = items[items.length-1];
-				target = target.tagName==='BR'?target.parentElement:target;
-				target = [items[2],items[3],items[items.length-1]];
-				return collection ? [collection,items,target] : undefined;
+				stack = stack.reverse();
+				var block   = stack[2];
+				var item    = stack[3]===stack[stack.length-1]?stack[2]:stack[3];
+				var element = stack[stack.length-1];
+				element = element.tagName==='BR'?element.parentElement:element;
+				return collection ? [collection,stack,[block,item,element]] : undefined;
 			},
 			clone : function(r,p){
 				var clone = p[0].cloneNode(true);
@@ -461,7 +525,7 @@ const writable = {
 		},
 		property : function(r,p){
 			var obj   = p[0][0];
-			var items = p[0][1];
+			var items = p[0][1].slice(0).reverse();
 			var paths = p[1];
 			for(path in paths){obj=obj?obj[paths[path]]:undefined;}
 			var count = 0,property;
@@ -497,7 +561,8 @@ const writable = {
 			},
 			triggers : {13:{p:1},8:{p:1}},
 			selector : {'p':true},
-			modifier : {'a':["modifier-link",1],'span':["modifier-text",0]}
+			modifier : {'a':["modifier-link",1],
+						'p':["modifier-text",0]}
 		},
 		heading : {
 			
@@ -604,13 +669,16 @@ const writable = {
 			},
 			triggers : {13:{li:1},8:{li:1}},
 			selector : false,
+			modifier : {'a':["modifier-link",1],
+						'li':["modifier-text",0]},
+			
 			actions : {
 				set : {
 					icon : function(p){
 						var collection = p[0];
 						var elements = collection.getElementsByTagName("li");
 						for(var i = 0;i<elements.length;i++){
-							elements[i].style.backgroundImage = "url('"+p[1]+"')";
+							//elements[i].style.backgroundImage = "url('"+p[1]+"')";
 						}
 					}
 				}
@@ -619,7 +687,7 @@ const writable = {
 		},
 		expandable : {
 			markup : {
-				styles    	: {"default" :['expandable','border','item'],
+				styles : {"default" :['expandable','border','item'],
 							   "resources" :['expandable','container','resource']},
 				collection  : {'expandable':'<div class="expandable"></div>'},
 				containers  : {
@@ -627,12 +695,12 @@ const writable = {
 								'container':'<div class="container"></div>'
 							  },
 				blocks : {
-					"item":'<div class="item"><div class="item-toggle show">Sample Title</div><div class="item-content"><div class="paragraph"><div class="container"><p><span>Details</span></p></div></div></div></div>',
+					"item":'<div class="item"><div class="item-toggle show"><br></div><div class="item-content"><div class="paragraph"><div class="container"><p><span><br></span></p></div></div></div></div>',
 					"resource":'<div class="resource"><div class="resource-toggle show">Title</div><div class="resource-list"><a class="resource-list-item" href="">Sample 1</a></div></div>'
 				},
 				elements : {'resource-list-item':'<a class="resource-list-item" href=""><br></a>'} 
 			},
-			triggers : {13:{"item-toggle":4,"resource-toggle":4,"resource-list-item":5},
+			triggers : {13:{"resource-list-item":5,"item-content":4},
 					   8:{"resource-list-item":3}},
 			selector : {"content":true},
 			modifier : {'a':["modifier-resource",1]},
@@ -767,7 +835,7 @@ const writable = {
 		
 	}
 		
-	
+	 
 	
 	
 	

@@ -7,8 +7,8 @@
 	WRITABLE BLOCKS (writable.ai) 
 */	
 	
-	.writable{outline:none}
-	.writable #writable-end{height:180px;font-family:"Lato"}
+	.writable{outline:none;font-family: Montserrat}
+	.writable #writable-end{height:180px;}
 	
 	.paragraph{margin:36px 0px}
 	.heading{margin:36px 0px}
@@ -32,12 +32,12 @@
 	/*paragraph*/
 	.paragraph p{margin:24px 0px;}
 	.paragraph span{letter-spacing:0.3px;font-weight: 300;}
-	.paragraph b{letter-spacing:-.8px;font-weight: 500;}
+	.paragraph b{letter-spacing:-.8px;font-weight: bold;}
 	.paragraph a{letter-spacing:0.3px;font-weight: 300;color: black}
 	.paragraph mark{background-color:rgba(187,207,6,0.2);}
 	
 	/*heading*/	
-	.heading h1{font-weight:200;letter-spacing:-0.8px;font-size:58px;}
+	.heading h1{font-weight:200;letter-spacing:-0.8px;font-size:58px;font-family: 'Zilla Slab'}
 	.heading h3{font-weight:600;letter-spacing:-0.8px;font-size:21px;}
 	
 	/*quote*/
@@ -64,8 +64,8 @@
 	
 	.list .unordered,
 	.list .ordered,
-	.list .icon{margin-left:-24px}
-	.list .icon{list-style-type: none;margin-left:-48px}
+	.list .icon{margin-left:-15px}
+	.list .icon{list-style-type: none;margin-left:-40px}
 	.list .unordered-item,
 	.list .ordered-item,
 	.list .icon-item{padding-left:48px;margin:24px 0px}
@@ -93,9 +93,9 @@
 	
 	/*table*/
 	.table .heading,
-	.table .row{display:table;width:100%;border-top:1px solid rgb(220,220,220);border-bottom:1px solid rgb(220,220,220);border-left:1px solid rgb(220,220,220);margin-top:-2px;background-color: white;font-size: 18px;line-height:30px;letter-spacing: 0px;font-weight: 300}
+	.table .row{display:table;width:100%;border-top:1px solid rgb(220,220,220);border-bottom:1px solid rgb(220,220,220);border-left:1px solid rgb(220,220,220);margin-top:-2px;background-color: white;font-size: 16px;line-height:30px;letter-spacing: 0px;font-weight: 300}
 	.table .row-heading,
-	.table .row-cell{display:table-cell;word-break:break-all;vertical-align:top;padding:12px 18px;border-right:1px solid rgb(220,220,220)}
+	.table .row-cell{display:table-cell;word-break:break-all;vertical-align:top;padding:9px 18px;border-right:1px solid rgb(220,220,220)}
 	.table .row-heading{margin:0px;font-weight:500}
 	
 	
@@ -105,7 +105,7 @@
 		cursor: pointer;margin-right:24px;display:inline-block;vertical-align: middle;background-image:url("https://rumcore.github.io/writable.ai/v2/icons/svg/black-selector-open.svg");background-size: contain;width:36px;height:36px;
 	}
 	.selector .options{vertical-align:middle;background-color:white;padding:6px;display:none}
-	.selector .options-option{background-size: contain;width:25px;height:25px;display:inline-block;vertical-align: middle;margin-right:30px;cursor:pointer;opacity: 0.5;}
+	.selector .options-option{background-size: contain;width:24px;height:24px;display:inline-block;vertical-align: middle;margin-right:30px;cursor:pointer;opacity: 0.5;}
 	.selector .options-option:hover{opacity:1;}
 
 	/*modifier*/

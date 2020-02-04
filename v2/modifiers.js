@@ -88,23 +88,26 @@ const modifiers = {
 			}
 		},
 		hide : function(r){
-				if(this.active){
+			if(this.active){
 				r.block.style.display = "none";
 				document.getElementById(this.active).style.display = "none";
 				this.active = false;
 			}
 		},
 		
+		
+	
 		toggle : function(r,p){
+			this.hide(r)
 			var collection = p[0];
 			var element   = collection[0][0];
 			if(r.writable.trigger === 0 || r.writable.trigger === 2){
 				var modifier = r.writable.get.property(r,[collection,["modifier"]]);
-				console.log(modifier)
+				
 				if(modifier){
 					this.show(r,[modifier,collection[2]])
 				}else{
-					this.hide(r)
+					//this.hide(r)
 				}
 			}
 		},
